@@ -32,7 +32,22 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: lint-makefile (installs checkmake on demand)
-        run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk"
+        run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk shell.mk"
 
       - name: format-makefile (installs mbake on demand)
-        run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="yaml.mk makefile.mk"
+        run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="yaml.mk makefile.mk shell.mk"
+
+  test-shell-mk:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, ubuntu-slim]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: lint-shell (installs shellcheck on demand)
+        run: make -f shell.mk lint-shell SHELL_LINT_PATH=testdata
+
+      - name: format-shell (installs shfmt on demand)
+        run: make -f shell.mk format-shell SHELL_FORMAT_PATH=testdata
