@@ -28,9 +28,9 @@ install-shfmt:
 		case "$$(uname -s)" in \
 			Darwin) brew install shfmt ;; \
 			*) \
-				if command -v go >/dev/null 2>&1 && go install mvdan.cc/sh/v3/cmd/shfmt@latest; then \
-					gobin="$$(go env GOBIN)"; \
-					if [ -z "$$gobin" ]; then gobin="$$(go env GOPATH)/bin"; fi; \
+			if command -v go >/dev/null 2>&1 && go install mvdan.cc/sh/v3/cmd/shfmt@latest; then \
+				gobin="$$(go env GOBIN)"; \
+				if [ -z "$$gobin" ]; then gobin="$$(go env GOPATH)/bin"; fi; \
 					sudo cp "$$gobin/shfmt" /usr/local/bin/shfmt; \
 				else \
 					arch="$$(uname -m)"; \
