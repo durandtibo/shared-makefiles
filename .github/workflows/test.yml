@@ -17,10 +17,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: lint-yaml (installs yamllint on demand)
-        run: make -f yaml.mk lint-yaml YAML_LINT_PATH=.github/workflows
+        run: make -f yaml.mk lint-yaml YAML_LINT_PATH=testdata/sample.yaml
 
       - name: format-yaml (installs prettier on demand)
-        run: make -f yaml.mk format-yaml YAML_FORMAT_PATH=.github/workflows
+        run: make -f yaml.mk format-yaml YAML_FORMAT_PATH=testdata/sample.yaml
 
   test-makefile-mk:
     strategy:
@@ -32,10 +32,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: lint-makefile (installs checkmake on demand)
-        run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk shell.mk"
+        run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk shell.mk markdown.mk"
 
       - name: format-makefile (installs mbake on demand)
-        run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="yaml.mk makefile.mk shell.mk"
+        run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="yaml.mk makefile.mk shell.mk markdown.mk"
 
   test-shell-mk:
     strategy:
@@ -51,3 +51,18 @@ jobs:
 
       - name: format-shell (installs shfmt on demand)
         run: make -f shell.mk format-shell SHELL_FORMAT_PATH=testdata
+
+  test-markdown-mk:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, ubuntu-slim]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: lint-markdown (installs markdownlint on demand)
+        run: make -f markdown.mk lint-markdown MARKDOWN_LINT_GLOB=testdata/sample.md
+
+      - name: format-markdown (installs prettier on demand)
+        run: make -f markdown.mk format-markdown MARKDOWN_FORMAT_PATH=testdata/sample.md
