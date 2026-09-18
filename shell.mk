@@ -20,13 +20,28 @@ install-shellcheck:
 		esac; \
 	fi
 
+SHFMT_VERSION ?= v3.10.0
+
 .PHONY: install-shfmt
 install-shfmt:
 	@if ! command -v shfmt >/dev/null 2>&1; then \
 		echo "📦 shfmt not found, installing..."; \
 		case "$$(uname -s)" in \
 			Darwin) brew install shfmt ;; \
-			*) go install mvdan.cc/sh/v3/cmd/shfmt@latest ;; \
+			*) \
+				if command -v go >/dev/null 2>&1 && go install mvdan.cc/sh/v3/cmd/shfmt@latest; then \
+					: ; \
+				else \
+					arch="$$(uname -m)"; \
+					case "$$arch" in \
+						x86_64) arch=amd64 ;; \
+						aarch64|arm64) arch=arm64 ;; \
+					esac; \
+					curl -fsSL -o /tmp/shfmt "https://github.com/mvdan/sh/releases/download/$(SHFMT_VERSION)/shfmt_$(SHFMT_VERSION)_linux_$${arch}"; \
+					chmod +x /tmp/shfmt; \
+					sudo mv /tmp/shfmt /usr/local/bin/shfmt; \
+				fi; \
+				;; \
 		esac; \
 	fi
 
