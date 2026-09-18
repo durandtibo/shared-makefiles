@@ -25,28 +25,30 @@ format: format-yaml format-makefile format-shell format-markdown
 lint: lint-yaml lint-makefile lint-shell lint-markdown
 ```
 
-Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`, `markdownlint`) are installed on demand — each
+Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`, `markdownlint`)
+are installed on demand — each
 `format-*`/`lint-*` target depends on an `install-*` target that installs the tool if it isn't
 already on `PATH`. Run `make install-tools` to install all of them upfront.
 
 ## Available files
 
-| File          | Targets                                     | Tools                      | Description                                  |
-| ------------- | ------------------------------------------- | -------------------------- | -------------------------------------------- |
-| `yaml.mk`     | `format-yaml`, `lint-yaml`                  | `prettier`, `yamllint`     | Format and lint YAML files                   |
-| `makefile.mk` | `format-makefile`, `lint-makefile`          | `mbake`, `checkmake`       | Format and lint Makefiles                    |
-| `shell.mk`    | `format-shell`, `lint-shell`                | `shfmt`, `shellcheck`      | Format and lint shell scripts                |
-| `markdown.mk` | `format-markdown`, `lint-markdown`          | `prettier`, `markdownlint` | Format and lint Markdown files               |
-| `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv` |
+| File          | Targets                                     | Tools                      | Description                                                           |
+| ------------- | ------------------------------------------- | -------------------------- | --------------------------------------------------------------------- |
+| `yaml.mk`     | `format-yaml`, `lint-yaml`                  | `prettier`, `yamllint`     | Format and lint YAML files                                            |
+| `makefile.mk` | `format-makefile`, `lint-makefile`          | `mbake`, `checkmake`       | Format and lint Makefiles                                             |
+| `shell.mk`    | `format-shell`, `lint-shell`                | `shfmt`, `shellcheck`      | Format and lint shell scripts                                         |
+| `markdown.mk` | `format-markdown`, `lint-markdown`          | `prettier`, `markdownlint` | Format and lint Markdown files                                        |
+| `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv`                          |
+| `prettier.mk` | `install-prettier`                          | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk` |
 
 ### `yaml.mk`
 
 Optional variables (set before `include`):
 
-| Variable           | Default | Description               |
-| ------------------ | ------- | ------------------------- |
-| `YAML_FORMAT_PATH` | `.`     | Path passed to `prettier` |
-| `YAML_LINT_PATH`   | `.`     | Path passed to `yamllint` |
+| Variable           | Default | Description                                                   |
+| ------------------ | ------- | ------------------------------------------------------------- |
+| `YAML_FORMAT_PATH` | `.`     | Root path globbed for `**/*.{yml,yaml}`, passed to `prettier` |
+| `YAML_LINT_PATH`   | `.`     | Path passed to `yamllint`                                     |
 
 ```makefile
 include yaml.mk
@@ -88,10 +90,10 @@ SHELL_LINT_PATH = scripts
 
 Optional variables (set before `include`):
 
-| Variable               | Default   | Description                   |
-| ---------------------- | --------- | ----------------------------- |
-| `MARKDOWN_FORMAT_PATH` | `.`       | Path passed to `prettier`     |
-| `MARKDOWN_LINT_GLOB`   | `**/*.md` | Glob passed to `markdownlint` |
+| Variable               | Default   | Description                                           |
+| ---------------------- | --------- | ----------------------------------------------------- |
+| `MARKDOWN_FORMAT_PATH` | `.`       | Root path globbed for `**/*.md`, passed to `prettier` |
+| `MARKDOWN_LINT_GLOB`   | `**/*.md` | Glob passed to `markdownlint`                         |
 
 ```makefile
 include markdown.mk
@@ -139,4 +141,5 @@ installation) to make sure the rules stay portable across platforms.
 
 ## License
 
-[MIT](LICENSE)
+This repo is licensed under BSD 3-Clause "New" or "Revised" license available in [LICENSE](LICENSE)
+file.
