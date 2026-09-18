@@ -97,9 +97,6 @@ jobs:
         with:
           activate-environment: true
 
-      - name: update-uv
-        run: make -f uv.mk update-uv
-
       - name: install-invoke
         run: make -f uv.mk install-invoke
 
