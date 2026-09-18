@@ -10,9 +10,6 @@ YAML_MK_INCLUDED := 1
 YAML_FORMAT_PATH ?= .
 YAML_LINT_PATH ?= .
 
-# Extra dirs tools may install into that aren't always on PATH.
-EXTRA_BIN_PATH = $(HOME)/.local/bin:$(shell python3 -m site --user-base 2>/dev/null)/bin
-
 .PHONY: install-prettier
 install-prettier:
 	@if ! command -v prettier >/dev/null 2>&1; then \
@@ -39,7 +36,7 @@ install-yamllint:
 .PHONY: lint-yaml
 lint-yaml: install-yamllint
 	@echo "🔍 Running yamllint on YAML files..."
-	PATH="$(EXTRA_BIN_PATH):$$PATH" yamllint -f colored $(YAML_LINT_PATH)
+	yamllint -f colored $(YAML_LINT_PATH)
 	@echo "✅ Yamllint passed"
 
 endif
