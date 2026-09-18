@@ -10,6 +10,12 @@ YAML_MK_INCLUDED := 1
 YAML_FORMAT_PATH ?= .
 YAML_LINT_PATH ?= .
 
+# Directory pip --user tools may be installed into when not on PATH.
+PYTHON_USER_BIN := $(shell python3 -m site --user-base 2>/dev/null)/bin
+ifeq (,$(findstring $(PYTHON_USER_BIN),$(PATH)))
+export PATH := $(PATH):$(PYTHON_USER_BIN)
+endif
+
 .PHONY: install-prettier
 install-prettier:
 	@if ! command -v prettier >/dev/null 2>&1; then \
@@ -27,7 +33,11 @@ format-yaml: install-prettier
 install-yamllint:
 	@if ! command -v yamllint >/dev/null 2>&1; then \
 		echo "📦 yamllint not found, installing..."; \
-		pip3 install --user yamllint; \
+		if command -v pipx >/dev/null 2>&1; then \
+			pipx install yamllint; \
+		else \
+			pip3 install --user --break-system-packages yamllint; \
+		fi; \
 	fi
 
 .PHONY: lint-yaml
