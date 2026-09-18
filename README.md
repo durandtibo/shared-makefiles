@@ -109,7 +109,7 @@ MARKDOWN_LINT_GLOB = docs/**/*.md
 
 ## Testing
 
-[`.github/workflows/test.yml`](.github/workflows/test.yml) exercises every file against
+[`.github/workflows/ci-test.yml`](.github/workflows/ci-test.yml) exercises every file against
 `ubuntu-latest`, `macos-latest`, and `ubuntu-slim` on every push/PR to `main`, running both the
 lint and format targets (including on-demand tool installation) to make sure the rules stay
 portable across platforms.
