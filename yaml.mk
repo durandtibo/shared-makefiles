@@ -10,11 +10,8 @@ YAML_MK_INCLUDED := 1
 YAML_FORMAT_PATH ?= .
 YAML_LINT_PATH ?= .
 
-# Directory pip --user tools may be installed into when not on PATH.
-PYTHON_USER_BIN := $(shell python3 -m site --user-base 2>/dev/null)/bin
-ifeq (,$(findstring $(PYTHON_USER_BIN),$(PATH)))
-export PATH := $(PATH):$(PYTHON_USER_BIN)
-endif
+# Extra dirs tools may install into that aren't always on PATH.
+EXTRA_BIN_PATH = $(HOME)/.local/bin:$(shell python3 -m site --user-base 2>/dev/null)/bin
 
 .PHONY: install-prettier
 install-prettier:
@@ -33,17 +30,16 @@ format-yaml: install-prettier
 install-yamllint:
 	@if ! command -v yamllint >/dev/null 2>&1; then \
 		echo "📦 yamllint not found, installing..."; \
-		if command -v pipx >/dev/null 2>&1; then \
-			pipx install yamllint; \
-		else \
-			pip3 install --user --break-system-packages yamllint; \
-		fi; \
+		case "$$(uname -s)" in \
+			Darwin) brew install yamllint ;; \
+			*) pip3 install --user yamllint ;; \
+		esac; \
 	fi
 
 .PHONY: lint-yaml
 lint-yaml: install-yamllint
 	@echo "🔍 Running yamllint on YAML files..."
-	yamllint -f colored $(YAML_LINT_PATH)
+	PATH="$(EXTRA_BIN_PATH):$$PATH" yamllint -f colored $(YAML_LINT_PATH)
 	@echo "✅ Yamllint passed"
 
 endif
