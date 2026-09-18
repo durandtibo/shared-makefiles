@@ -24,13 +24,28 @@ install-mbake:
 		fi; \
 	fi
 
+CHECKMAKE_VERSION ?= v0.3.2
+
 .PHONY: install-checkmake
 install-checkmake:
 	@if ! command -v checkmake >/dev/null 2>&1; then \
 		echo "📦 checkmake not found, installing..."; \
 		case "$$(uname -s)" in \
 			Darwin) brew install checkmake ;; \
-			*) go install github.com/mrtazz/checkmake/cmd/checkmake@latest ;; \
+			*) \
+				if command -v go >/dev/null 2>&1 && go install github.com/mrtazz/checkmake/cmd/checkmake@latest; then \
+					: ; \
+				else \
+					arch="$$(uname -m)"; \
+					case "$$arch" in \
+						x86_64) arch=amd64 ;; \
+						aarch64|arm64) arch=arm64 ;; \
+					esac; \
+					curl -fsSL -o /tmp/checkmake "https://github.com/checkmake/checkmake/releases/download/$(CHECKMAKE_VERSION)/checkmake-$(CHECKMAKE_VERSION).linux.$${arch}"; \
+					chmod +x /tmp/checkmake; \
+					sudo mv /tmp/checkmake /usr/local/bin/checkmake; \
+				fi; \
+				;; \
 		esac; \
 	fi
 
