@@ -31,12 +31,13 @@ already on `PATH`. Run `make install-tools` to install all of them upfront.
 
 ## Available files
 
-| File          | Targets                            | Tools                      | Description                    |
-| ------------- | ---------------------------------- | -------------------------- | ------------------------------ |
-| `yaml.mk`     | `format-yaml`, `lint-yaml`         | `prettier`, `yamllint`     | Format and lint YAML files     |
-| `makefile.mk` | `format-makefile`, `lint-makefile` | `mbake`, `checkmake`       | Format and lint Makefiles      |
-| `shell.mk`    | `format-shell`, `lint-shell`       | `shfmt`, `shellcheck`      | Format and lint shell scripts  |
-| `markdown.mk` | `format-markdown`, `lint-markdown` | `prettier`, `markdownlint` | Format and lint Markdown files |
+| File          | Targets                                     | Tools                      | Description                                  |
+| ------------- | ------------------------------------------- | -------------------------- | -------------------------------------------- |
+| `yaml.mk`     | `format-yaml`, `lint-yaml`                  | `prettier`, `yamllint`     | Format and lint YAML files                   |
+| `makefile.mk` | `format-makefile`, `lint-makefile`          | `mbake`, `checkmake`       | Format and lint Makefiles                    |
+| `shell.mk`    | `format-shell`, `lint-shell`                | `shfmt`, `shellcheck`      | Format and lint shell scripts                |
+| `markdown.mk` | `format-markdown`, `lint-markdown`          | `prettier`, `markdownlint` | Format and lint Markdown files               |
+| `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv` |
 
 ### `yaml.mk`
 
@@ -98,6 +99,26 @@ include markdown.mk
 MARKDOWN_LINT_GLOB = docs/**/*.md
 ```
 
+### `uv.mk`
+
+Optional variables (set before `include`):
+
+| Variable         | Default | Description                                 |
+| ---------------- | ------- | ------------------------------------------- |
+| `PYTHON_VERSION` | `3.14`  | Python version passed to `uv venv --python` |
+
+```makefile
+include uv.mk
+
+PYTHON_VERSION = 3.12
+```
+
+`install-invoke` installs `uv` on demand and then `invoke>=3.0` via `uv pip install`.
+`update-uv` runs `uv self update`. `setup-venv` updates `uv`, creates a fresh `.venv`
+(`uv venv --python $(PYTHON_VERSION) --clear`), installs `invoke` into it, and runs
+`.venv/bin/inv create-venv` and `.venv/bin/inv install --docs-deps` — it assumes the
+project's `tasks.py` (or equivalent) defines `create-venv` and `install` invoke tasks.
+
 ## Design
 
 - **Include guards** — each file defines an `_MK_INCLUDED` variable so it's safe to `include`
@@ -109,10 +130,11 @@ MARKDOWN_LINT_GLOB = docs/**/*.md
 
 ## Testing
 
-[`.github/workflows/ci-test.yml`](.github/workflows/ci-test.yml) exercises every file against
-`ubuntu-latest`, `macos-latest`, and `ubuntu-slim` on every push/PR to `main`, running both the
-lint and format targets (including on-demand tool installation) to make sure the rules stay
-portable across platforms.
+[`.github/workflows/ci-test.yml`](.github/workflows/ci-test.yml) exercises every file against the
+Unix OS matrix (Ubuntu and macOS runners) resolved dynamically via
+[`durandtibo/workflow-config-action`](https://github.com/durandtibo/workflow-config-action) on
+every push/PR to `main`, running both the lint and format targets (including on-demand tool
+installation) to make sure the rules stay portable across platforms.
 
 ## License
 

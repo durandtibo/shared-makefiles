@@ -82,3 +82,22 @@ jobs:
 
       - name: format-markdown (installs prettier on demand)
         run: make -f markdown.mk format-markdown MARKDOWN_FORMAT_PATH=testdata/sample.md
+
+  test-uv-mk:
+    needs: workflow-config
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: update-uv (installs uv on demand)
+        run: make -f uv.mk update-uv
+
+      - name: install-invoke
+        run: make -f uv.mk install-invoke
+
+      - name: check invoke is installed
+        run: uv pip show invoke
