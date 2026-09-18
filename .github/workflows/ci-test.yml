@@ -95,6 +95,19 @@ jobs:
       - name: format-markdown (no matching files)
         run: make -f markdown.mk format-markdown MARKDOWN_FORMAT_PATH="testdata/no-such-dir/*.md"
 
+  test-actions-mk:
+    needs: workflow-config
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: lint-actions (installs actionlint on demand)
+        run: make -f actions.mk lint-actions ACTIONS_LINT_PATH=testdata
+
   test-uv-mk:
     needs: workflow-config
     strategy:
