@@ -40,6 +40,7 @@ already on `PATH`. Run `make install-tools` to install all of them upfront.
 | `markdown.mk` | `format-markdown`, `lint-markdown`          | `prettier`, `markdownlint` | Format and lint Markdown files                                        |
 | `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv`                          |
 | `prettier.mk` | `install-prettier`                          | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk` |
+| `self.mk`     | `update-subtree`                            | `git`                      | Sync the `.make` shared-makefiles subtree                             |
 
 ### `yaml.mk`
 
@@ -121,6 +122,28 @@ active virtual environment (create one first, e.g. with `uv venv`).
 (`uv venv --python $(PYTHON_VERSION) --clear`), installs `invoke` into it, and runs
 `.venv/bin/inv create-venv` and `.venv/bin/inv install --docs-deps` — it assumes the
 project's `tasks.py` (or equivalent) defines `create-venv` and `install` invoke tasks.
+
+### `self.mk`
+
+For projects that vendor this repo as a subtree (e.g. at `.make/`), `self.mk` provides a target
+to pull in upstream changes.
+
+Optional variables (set before `include`):
+
+| Variable                       | Default                                              | Description     |
+| ------------------------------ | ---------------------------------------------------- | --------------- |
+| `SHARED_MAKEFILES_REMOTE_NAME` | `shared-makefiles`                                   | Git remote name |
+| `SHARED_MAKEFILES_REMOTE_URL`  | `https://github.com/durandtibo/shared-makefiles.git` | Git remote URL  |
+| `SHARED_MAKEFILES_BRANCH`      | `main`                                               | Branch to pull  |
+| `SHARED_MAKEFILES_PREFIX`      | `.make`                                              | Subtree prefix  |
+
+```makefile
+include self.mk
+```
+
+`update-subtree` adds the `$(SHARED_MAKEFILES_REMOTE_NAME)` remote if missing, fetches
+`$(SHARED_MAKEFILES_BRANCH)`, and runs `git subtree pull --prefix=$(SHARED_MAKEFILES_PREFIX)
+$(SHARED_MAKEFILES_REMOTE_NAME) $(SHARED_MAKEFILES_BRANCH) --squash` to sync the subtree.
 
 ## Design
 
