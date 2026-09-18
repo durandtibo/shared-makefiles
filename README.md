@@ -113,7 +113,8 @@ include uv.mk
 PYTHON_VERSION = 3.12
 ```
 
-`install-invoke` installs `uv` on demand and then `invoke>=3.0` via `uv pip install`.
+`install-invoke` installs `uv` on demand and then `invoke>=3.0` via
+`uv pip install --system` (no project virtual environment is assumed to exist yet).
 `update-uv` runs `uv self update`. `setup-venv` updates `uv`, creates a fresh `.venv`
 (`uv venv --python $(PYTHON_VERSION) --clear`), installs `invoke` into it, and runs
 `.venv/bin/inv create-venv` and `.venv/bin/inv install --docs-deps` — it assumes the
