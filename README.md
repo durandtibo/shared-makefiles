@@ -12,24 +12,29 @@ Include the files you need in your project's `Makefile`:
 ```makefile
 include yaml.mk
 include makefile.mk
+include shell.mk
+
+.PHONY: install-tools
+install-tools: install-prettier install-yamllint install-mbake install-checkmake install-shellcheck install-shfmt
 
 .PHONY: format
-format: format-yaml format-makefile
+format: format-yaml format-makefile format-shell
 
 .PHONY: lint
-lint: lint-yaml lint-makefile
+lint: lint-yaml lint-makefile lint-shell
 ```
 
-Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`) are installed on demand — each
+Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`) are installed on demand — each
 `format-*`/`lint-*` target depends on an `install-*` target that installs the tool if it isn't
-already on `PATH`.
+already on `PATH`. Run `make install-tools` to install all of them upfront.
 
 ## Available files
 
-| File          | Targets                            | Tools                  | Description                |
-| ------------- | ---------------------------------- | ---------------------- | -------------------------- |
-| `yaml.mk`     | `format-yaml`, `lint-yaml`         | `prettier`, `yamllint` | Format and lint YAML files |
-| `makefile.mk` | `format-makefile`, `lint-makefile` | `mbake`, `checkmake`   | Format and lint Makefiles  |
+| File          | Targets                            | Tools                  | Description                   |
+| ------------- | ---------------------------------- | ---------------------- | ----------------------------- |
+| `yaml.mk`     | `format-yaml`, `lint-yaml`         | `prettier`, `yamllint` | Format and lint YAML files    |
+| `makefile.mk` | `format-makefile`, `lint-makefile` | `mbake`, `checkmake`   | Format and lint Makefiles     |
+| `shell.mk`    | `format-shell`, `lint-shell`       | `shfmt`, `shellcheck`  | Format and lint shell scripts |
 
 ### `yaml.mk`
 
@@ -59,6 +64,21 @@ Optional variables (set before `include`):
 include makefile.mk
 
 MAKEFILE_LINT_FILES = Makefile makefile.mk yaml.mk
+```
+
+### `shell.mk`
+
+Optional variables (set before `include`):
+
+| Variable            | Default | Description                                           |
+| ------------------- | ------- | ----------------------------------------------------- |
+| `SHELL_FORMAT_PATH` | `.`     | Path passed to `shfmt` (walked recursively)           |
+| `SHELL_LINT_PATH`   | `.`     | Path searched for `*.sh` files passed to `shellcheck` |
+
+```makefile
+include shell.mk
+
+SHELL_LINT_PATH = scripts
 ```
 
 ## Design
