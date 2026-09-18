@@ -48,13 +48,13 @@ install-shfmt:
 .PHONY: lint-shell
 lint-shell: install-shellcheck
 	@echo "🐚 Running shellcheck on shell scripts..."
-	find $(SHELL_LINT_PATH) -type f -name '*.sh' -print0 | xargs -0 -r shellcheck
+	find $(SHELL_LINT_PATH) -type d -name '.make' -prune -o -type f -name '*.sh' -print0 | xargs -0 -r shellcheck
 	@echo "✅ Shellcheck passed"
 
 .PHONY: format-shell
 format-shell: install-shfmt
 	@echo "🔧 Running shfmt to format shell scripts..."
-	shfmt -l -w $(SHELL_FORMAT_PATH)
+	find $(SHELL_FORMAT_PATH) -type d -name '.make' -prune -o -type f -name '*.sh' -print0 | xargs -0 -r shfmt -l -w
 	@echo "✅ Shell formatting complete"
 
 endif

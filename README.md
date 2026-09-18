@@ -130,6 +130,10 @@ project's `tasks.py` (or equivalent) defines `create-venv` and `install` invoke 
   checks `command -v` before installing, so CI and local runs don't need the tool preinstalled.
 - **Configurable paths** — variables default to sensible project-wide values but can be
   overridden per project or per target invocation.
+- **`.make/` excluded by default** — this repo is meant to be vendored as a subtree at `.make/`
+  in consuming projects, so every formatter/linter skips that folder by default:
+  [`.prettierignore`](.prettierignore) and [`.markdownlintignore`](.markdownlintignore) exclude
+  it, `.yamllint.yaml` sets `ignore: .make/`, and `shell.mk`'s `find` commands `-prune` it.
 
 ## Testing
 
