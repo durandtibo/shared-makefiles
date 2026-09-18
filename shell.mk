@@ -29,14 +29,14 @@ install-shfmt:
 		case "$$(uname -s)" in \
 			Darwin) brew install shfmt ;; \
 			*) \
-				if command -v go >/dev/null 2>&1 && go install mvdan.cc/sh/v3/cmd/shfmt@latest; then \
-					: ; \
-				else \
-					arch="$$(uname -m)"; \
-					case "$$arch" in \
-						x86_64) arch=amd64 ;; \
-						aarch64|arm64) arch=arm64 ;; \
-					esac; \
+			if command -v go >/dev/null 2>&1 && go install mvdan.cc/sh/v3/cmd/shfmt@latest; then \
+				: ; \
+			else \
+				arch="$$(uname -m)"; \
+				case "$$arch" in \
+					x86_64) arch=amd64 ;; \
+					aarch64|arm64) arch=arm64 ;; \
+				esac; \
 					curl -fsSL -o /tmp/shfmt "https://github.com/mvdan/sh/releases/download/$(SHFMT_VERSION)/shfmt_$(SHFMT_VERSION)_linux_$${arch}"; \
 					chmod +x /tmp/shfmt; \
 					sudo mv /tmp/shfmt /usr/local/bin/shfmt; \
