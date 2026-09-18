@@ -93,11 +93,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: update-uv (installs uv on demand)
+      - uses: astral-sh/setup-uv@v10.1.0
+        with:
+          activate-environment: true
+
+      - name: update-uv
         run: make -f uv.mk update-uv
 
       - name: install-invoke
         run: make -f uv.mk install-invoke
 
       - name: check invoke is installed
-        run: uv pip show --system invoke
+        run: uv pip show invoke
