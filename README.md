@@ -13,28 +13,30 @@ Include the files you need in your project's `Makefile`:
 include yaml.mk
 include makefile.mk
 include shell.mk
+include markdown.mk
 
 .PHONY: install-tools
-install-tools: install-prettier install-yamllint install-mbake install-checkmake install-shellcheck install-shfmt
+install-tools: install-prettier install-yamllint install-mbake install-checkmake install-shellcheck install-shfmt install-markdownlint
 
 .PHONY: format
-format: format-yaml format-makefile format-shell
+format: format-yaml format-makefile format-shell format-markdown
 
 .PHONY: lint
-lint: lint-yaml lint-makefile lint-shell
+lint: lint-yaml lint-makefile lint-shell lint-markdown
 ```
 
-Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`) are installed on demand — each
+Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`, `markdownlint`) are installed on demand — each
 `format-*`/`lint-*` target depends on an `install-*` target that installs the tool if it isn't
 already on `PATH`. Run `make install-tools` to install all of them upfront.
 
 ## Available files
 
-| File          | Targets                            | Tools                  | Description                   |
-| ------------- | ---------------------------------- | ---------------------- | ----------------------------- |
-| `yaml.mk`     | `format-yaml`, `lint-yaml`         | `prettier`, `yamllint` | Format and lint YAML files    |
-| `makefile.mk` | `format-makefile`, `lint-makefile` | `mbake`, `checkmake`   | Format and lint Makefiles     |
-| `shell.mk`    | `format-shell`, `lint-shell`       | `shfmt`, `shellcheck`  | Format and lint shell scripts |
+| File          | Targets                            | Tools                      | Description                    |
+| ------------- | ---------------------------------- | -------------------------- | ------------------------------ |
+| `yaml.mk`     | `format-yaml`, `lint-yaml`         | `prettier`, `yamllint`     | Format and lint YAML files     |
+| `makefile.mk` | `format-makefile`, `lint-makefile` | `mbake`, `checkmake`       | Format and lint Makefiles      |
+| `shell.mk`    | `format-shell`, `lint-shell`       | `shfmt`, `shellcheck`      | Format and lint shell scripts  |
+| `markdown.mk` | `format-markdown`, `lint-markdown` | `prettier`, `markdownlint` | Format and lint Markdown files |
 
 ### `yaml.mk`
 
@@ -79,6 +81,21 @@ Optional variables (set before `include`):
 include shell.mk
 
 SHELL_LINT_PATH = scripts
+```
+
+### `markdown.mk`
+
+Optional variables (set before `include`):
+
+| Variable               | Default   | Description                   |
+| ---------------------- | --------- | ----------------------------- |
+| `MARKDOWN_FORMAT_PATH` | `.`       | Path passed to `prettier`     |
+| `MARKDOWN_LINT_GLOB`   | `**/*.md` | Glob passed to `markdownlint` |
+
+```makefile
+include markdown.mk
+
+MARKDOWN_LINT_GLOB = docs/**/*.md
 ```
 
 ## Design
