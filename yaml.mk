@@ -27,7 +27,10 @@ format-yaml: install-prettier
 install-yamllint:
 	@if ! command -v yamllint >/dev/null 2>&1; then \
 		echo "📦 yamllint not found, installing..."; \
-		pip3 install --user yamllint; \
+		case "$$(uname -s)" in \
+			Darwin) brew install yamllint ;; \
+			*) pip3 install --user yamllint ;; \
+		esac; \
 	fi
 
 .PHONY: lint-yaml

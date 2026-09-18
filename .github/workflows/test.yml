@@ -1,0 +1,44 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-yaml-mk:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, ubuntu-slim]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: lint-yaml (installs yamllint on demand)
+        run: make -f yaml.mk lint-yaml YAML_LINT_PATH=.github/workflows
+
+      - name: format-yaml (installs prettier on demand)
+        run: make -f yaml.mk format-yaml YAML_FORMAT_PATH=.github/workflows
+
+  test-makefile-mk:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, ubuntu-slim]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install checkmake and mbake
+        run: |
+          go install github.com/mrtazz/checkmake/cmd/checkmake@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          pip3 install --user mbake
+
+      - name: lint-makefile
+        run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk"
+
+      - name: format-makefile
+        run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="yaml.mk makefile.mk"
