@@ -31,14 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install checkmake and mbake
-        run: |
-          go install github.com/mrtazz/checkmake/cmd/checkmake@latest
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
-          pip3 install --user mbake
-
-      - name: lint-makefile
+      - name: lint-makefile (installs checkmake on demand)
         run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk"
 
-      - name: format-makefile
+      - name: format-makefile (installs mbake on demand)
         run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="yaml.mk makefile.mk"
