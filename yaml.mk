@@ -10,20 +10,12 @@ YAML_MK_INCLUDED := 1
 YAML_FORMAT_PATH ?= .
 YAML_LINT_PATH ?= .
 
-ifndef INSTALL_PRETTIER_MK_INCLUDED
-INSTALL_PRETTIER_MK_INCLUDED := 1
-.PHONY: install-prettier
-install-prettier:
-	@if ! command -v prettier >/dev/null 2>&1; then \
-		echo "📦 prettier not found, installing..."; \
-		npm install -g prettier; \
-	fi
-endif
+include prettier.mk
 
 .PHONY: format-yaml
 format-yaml: install-prettier
 	@echo "✨ Running prettier to format YAML files..."
-	prettier --write $(YAML_FORMAT_PATH)
+	prettier --write '$(YAML_FORMAT_PATH)/**/*.{yml,yaml}'
 	@echo "✅ Prettier formatting complete"
 
 .PHONY: install-yamllint

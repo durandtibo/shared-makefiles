@@ -10,20 +10,12 @@ MARKDOWN_MK_INCLUDED := 1
 MARKDOWN_FORMAT_PATH ?= .
 MARKDOWN_LINT_GLOB ?= **/*.md
 
-ifndef INSTALL_PRETTIER_MK_INCLUDED
-INSTALL_PRETTIER_MK_INCLUDED := 1
-.PHONY: install-prettier
-install-prettier:
-	@if ! command -v prettier >/dev/null 2>&1; then \
-		echo "📦 prettier not found, installing..."; \
-		npm install -g prettier; \
-	fi
-endif
+include prettier.mk
 
 .PHONY: format-markdown
 format-markdown: install-prettier
 	@echo "✨ Running prettier to format Markdown files..."
-	prettier --write $(MARKDOWN_FORMAT_PATH)
+	prettier --write '$(MARKDOWN_FORMAT_PATH)/**/*.md'
 	@echo "✅ Prettier formatting complete"
 
 .PHONY: install-markdownlint
