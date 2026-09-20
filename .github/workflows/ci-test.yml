@@ -27,7 +27,7 @@ jobs:
         os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: lint-yaml (installs yamllint on demand)
         run: make -f yaml.mk lint-yaml YAML_LINT_PATH=testdata/sample.yaml
@@ -46,7 +46,7 @@ jobs:
         os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: lint-makefile (installs checkmake on demand)
         run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="yaml.mk makefile.mk shell.mk markdown.mk"
@@ -65,7 +65,7 @@ jobs:
         os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: lint-shell (installs shellcheck on demand)
         run: make -f shell.mk lint-shell SHELL_LINT_PATH=testdata
@@ -84,7 +84,7 @@ jobs:
         os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: lint-markdown (installs markdownlint on demand)
         run: make -f markdown.mk lint-markdown MARKDOWN_LINT_GLOB=testdata/sample.md
@@ -103,7 +103,7 @@ jobs:
         os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: lint-actions (installs actionlint on demand)
         run: make -f actions.mk lint-actions ACTIONS_LINT_PATH=testdata
@@ -116,7 +116,7 @@ jobs:
         os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: astral-sh/setup-uv@v10.1.0
         with:
