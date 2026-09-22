@@ -128,8 +128,8 @@ jobs:
       - name: check invoke is installed
         run: uv pip show invoke
 
-      - name: install-invoke-plus
-        run: make -f uv.mk install-invoke-plus
+      - name: install-invoke-tasklib
+        run: make -f uv.mk install-invoke-tasklib
 
       - name: check invoke-tasklib is installed
         run: uv pip show invoke-tasklib
