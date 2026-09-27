@@ -76,6 +76,12 @@ jobs:
       - name: format-shell (no matching files)
         run: make -f shell.mk format-shell SHELL_FORMAT_PATH=testdata/no-such-dir
 
+      - name: check-format-shell (correctly formatted files)
+        run: make -f shell.mk check-format-shell SHELL_FORMAT_PATH=testdata
+
+      - name: check-format-shell (no matching files)
+        run: make -f shell.mk check-format-shell SHELL_FORMAT_PATH=testdata/no-such-dir
+
   test-markdown-mk:
     needs: workflow-config
     strategy:
