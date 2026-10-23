@@ -82,6 +82,15 @@ jobs:
       - name: check-format-shell (no matching files)
         run: make -f shell.mk check-format-shell SHELL_FORMAT_PATH=testdata/no-such-dir
 
+      - name: install-bats
+        run: make -f shell.mk install-bats
+
+      - name: check bats is installed
+        run: bats --version
+
+      - name: install-bats (already installed)
+        run: make -f shell.mk install-bats
+
   test-toml-mk:
     needs: workflow-config
     strategy:
