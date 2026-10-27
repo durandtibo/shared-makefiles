@@ -161,3 +161,13 @@ jobs:
 
       - name: check invoke-tasklib is installed
         run: uv pip show invoke-tasklib
+
+      - name: check invoke-tasklib version
+        run: |
+          uv pip show invoke-tasklib | grep -E '^Version: (0\.0\.([8-9]|[1-9][0-9])|0\.[1-9]|[1-9])'
+
+      - name: check env tasks are available
+        run: |
+          echo "from invoke_tasklib import ns" > tasks.py
+          inv --list | grep -E 'env\.create-venv'
+          inv --list | grep -E 'env\.install'

@@ -173,12 +173,12 @@ include uv.mk
 PYTHON_VERSION = 3.12
 ```
 
-`install-invoke` installs `uv` on demand and then `invoke>=3.0` via `uv pip install` into the
+`install-invoke` installs `uv` on demand and then `invoke>=3.0` and `invoke-tasklib>=0.0.8` via `uv pip install` into the
 active virtual environment (create one first, e.g. with `uv venv`).
 `update-uv` runs `uv self update`. `setup-venv` updates `uv`, creates a fresh `.venv`
 (`uv venv --python $(PYTHON_VERSION) --clear`), installs `invoke` into it, and runs
-`.venv/bin/inv create-venv` and `.venv/bin/inv install --docs-deps` — it assumes the
-project's `tasks.py` (or equivalent) defines `create-venv` and `install` invoke tasks.
+`.venv/bin/inv env.create-venv` and `.venv/bin/inv env.install` — it assumes the project's
+`tasks.py` exposes the `invoke-tasklib` tasks (`from invoke_tasklib import ns`).
 
 ### `self.mk`
 
