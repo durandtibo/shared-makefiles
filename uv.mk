@@ -30,7 +30,7 @@ setup-venv:
 	$(MAKE) update-uv
 	uv venv --python $(PYTHON_VERSION) --clear
 	$(MAKE) install-invoke
-	.venv/bin/inv env.create-venv
-	.venv/bin/inv env.install
+	uv run inv env.create-venv
+	uv run inv env.install
 
 endif
