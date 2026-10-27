@@ -177,7 +177,8 @@ PYTHON_VERSION = 3.12
 active virtual environment (create one first, e.g. with `uv venv`).
 `update-uv` runs `uv self update`. `setup-venv` updates `uv`, creates a fresh `.venv`
 (`uv venv --python $(PYTHON_VERSION) --clear`), installs `invoke` into it, and runs
-`.venv/bin/inv env.create-venv` and `.venv/bin/inv env.install` — it assumes the project's
+`uv run --no-sync inv env.create-venv`, reinstalls `invoke` (since `env.create-venv` clears the
+environment), then runs `uv run --no-sync inv env.install` — it assumes the project's
 `tasks.py` exposes the `invoke-tasklib` tasks (`from invoke_tasklib import ns`).
 
 ### `self.mk`

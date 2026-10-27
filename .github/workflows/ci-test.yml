@@ -171,3 +171,8 @@ jobs:
           echo "from invoke_tasklib import ns" > tasks.py
           inv --list | grep -E 'env\.create-venv'
           inv --list | grep -E 'env\.install'
+
+      - name: check env tasks run through uv run
+        run: |
+          uv run --no-sync inv --list | grep -E 'env\.create-venv'
+          uv run --no-sync inv --list | grep -E 'env\.install'
