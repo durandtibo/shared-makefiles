@@ -174,5 +174,5 @@ jobs:
 
       - name: check env tasks run through uv run
         run: |
-          uv run --no-sync inv --list | grep -E 'env\.create-venv'
-          uv run --no-sync inv --list | grep -E 'env\.install'
+          uv run inv --list | grep -E 'env\.create-venv'
+          uv run inv --list | grep -E 'env\.install'
