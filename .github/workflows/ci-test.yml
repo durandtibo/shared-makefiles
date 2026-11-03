@@ -10,9 +10,12 @@ on:
     - cron: "10 9 * * *" # Run nightly at 9:10 AM UTC to catch issues from external changes
   workflow_dispatch: # to trigger manually
 
+permissions: {}
+
 jobs:
   workflow-config:
     runs-on: ubuntu-slim
+    permissions: {}
     outputs:
       os_unix: ${{ steps.config.outputs.os_unix }}
     steps:
@@ -21,6 +24,8 @@ jobs:
 
   test-yaml-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -40,6 +45,8 @@ jobs:
 
   test-makefile-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -59,6 +66,8 @@ jobs:
 
   test-shell-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -93,6 +102,8 @@ jobs:
 
   test-toml-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -109,6 +120,8 @@ jobs:
 
   test-markdown-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -128,6 +141,8 @@ jobs:
 
   test-actions-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -141,6 +156,8 @@ jobs:
 
   test-self-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -154,6 +171,8 @@ jobs:
 
   test-uv-mk:
     needs: workflow-config
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
