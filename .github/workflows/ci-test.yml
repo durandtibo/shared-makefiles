@@ -139,6 +139,19 @@ jobs:
       - name: lint-actions (installs actionlint on demand)
         run: make -f actions.mk lint-actions ACTIONS_LINT_PATH=testdata
 
+  test-self-mk:
+    needs: workflow-config
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(needs.workflow-config.outputs.os_unix) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
+
+      - name: update-subtree removes unnecessary files
+        run: tests/test-self-mk.sh
+
   test-uv-mk:
     needs: workflow-config
     strategy:
