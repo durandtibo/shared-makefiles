@@ -68,6 +68,37 @@ TOML, Makefiles, GitHub Actions). Consumers vendor this repo as a git subtree (c
 - Pin GitHub Actions by commit SHA (see `bot-pin-action.yaml`) and keep workflow `permissions`
   minimal and explicit.
 
+## Workflow structure (`.github/workflows/`)
+
+Files are prefixed by role:
+
+- `ci.yaml` — entry point for pull requests, pushes to `main`, a nightly schedule and manual runs.
+  It holds no steps, only jobs that call the reusable `ci-*.yaml` workflows below.
+- `ci-format.yaml` — runs `make format` and checks that nothing changed; not matrix-based, so
+  `ci.yaml` calls it without `test-matrix`.
+- `ci-<module>.yaml` (`ci-yaml`, `ci-makefile`, `ci-shell`, `ci-toml`, `ci-markdown`, `ci-actions`,
+  `ci-uv`) — run the targets of `<module>.mk` against `testdata/` on the OS matrix (`ci-uv` also
+  uses the Python matrix).
+- `ci-self.yaml` — runs `tests/test-self-mk.sh` for `self.mk` on the OS matrix.
+- `ci-verify-workflows.yaml` — lints the workflow files. It has its own triggers and is not called
+  from `ci.yaml`, so it can be a required check.
+- `lib-get-test-matrix.yaml` — reusable workflow that loads the OS/Python matrices once from
+  `durandtibo/workflow-config-action`; callers pass them down via the `test-matrix` input.
+- `bot-*.yaml` — scheduled automation (`bot-format-files`, `bot-pin-action`,
+  `bot-cancel-stale-queued-runs`); the first two open PRs using a GitHub App token.
+- `security-*.yaml` — dependency review and OSSF Scorecard.
+
+Conventions:
+
+- Set `permissions: {}` at the top of every workflow and explicit `permissions` on every job,
+  including jobs that call reusable workflows.
+- Each matrix `ci-<module>` workflow is `workflow_call` only, takes the required `test-matrix`
+  string input, and sets `timeout-minutes` and `fail-fast: false`.
+- Call `make` targets in steps instead of duplicating commands, so local runs and CI match.
+- A new module gets its own `ci-<module>.yaml` plus a job (with `needs: get-matrix`) in `ci.yaml`.
+- Start each file with a comment describing what it does and update it when behaviour changes.
+- Pin actions by commit SHA with a `# ratchet:` comment (see `bot-pin-action.yaml`).
+
 ## Reporting
 
 - State which commands and tests were run and which were not, and that CI was not awaited.
