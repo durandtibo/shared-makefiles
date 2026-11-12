@@ -20,10 +20,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
 
-      - name: Check formatting
-        uses: durandtibo/format-files-action@1c50829b34a99c23bb309a56546722f594c2996b # ratchet:durandtibo/format-files-action@v0.0.2
-        with:
-          check: true
+      # The root Makefile includes the modules directly, so the format-files-action (which expects
+      # the modules vendored in .make/) is not used here.
+      - name: Format files
+        run: |
+          make format
+
+      - name: Check that the files are formatted
+        run: |
+          git diff --exit-code
 
       - name: Check shell formatting
         run: |
