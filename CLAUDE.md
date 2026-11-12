@@ -15,7 +15,9 @@ TOML, Makefiles, GitHub Actions). Consumers vendor this repo as a git subtree (c
   `format` and `lint`.
 - `testdata/` — sample files used by CI to exercise each module.
 - `tests/` — shell tests (e.g. `tests/test-self-mk.sh` for `update-subtree`).
-- `.github/workflows/` — CI (`ci-test.yml` runs each module against `testdata/`).
+- `.github/workflows/` — CI (`ci.yaml` orchestrates the reusable `ci-<module>.yaml` workflows,
+  which run each module against `testdata/`; `lib-get-test-matrix.yaml` loads the OS/Python
+  matrices).
 
 ## Environment
 
@@ -59,8 +61,9 @@ TOML, Makefiles, GitHub Actions). Consumers vendor this repo as a git subtree (c
 
 ## Tests and CI
 
-- Each module has a CI job in `.github/workflows/ci-test.yml` that runs its targets against files
-  in `testdata/`. Add a sample file and a job for any new module.
+- Each module has a reusable workflow `.github/workflows/ci-<module>.yaml` (taking the `test-matrix`
+  input of `lib-get-test-matrix.yaml`) that runs its targets against files in `testdata/`, called
+  from a job in `ci.yaml`. Add a sample file, a workflow and a job for any new module.
 - Shell tests live in `tests/`; they use temp dirs and must not touch the real repo or network.
 - Pin GitHub Actions by commit SHA (see `bot-pin-action.yaml`) and keep workflow `permissions`
   minimal and explicit.
