@@ -64,6 +64,12 @@ jobs:
       - name: format-makefile (no matching files)
         run: make -f makefile.mk format-makefile MAKEFILE_FORMAT_FILES="no-such-dir/*.mk"
 
+      - name: lint-makefile (no matching files)
+        run: make -f makefile.mk lint-makefile MAKEFILE_LINT_FILES="no-such-dir/*.mk"
+
+      - name: lint-makefile (unit test with fake checkmake)
+        run: bash tests/test-makefile-mk.sh
+
   test-shell-mk:
     needs: workflow-config
     permissions:
