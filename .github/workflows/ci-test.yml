@@ -145,6 +145,9 @@ jobs:
       - name: format-markdown (no matching files)
         run: make -f markdown.mk format-markdown MARKDOWN_FORMAT_PATH="testdata/no-such-dir/*.md"
 
+      - name: lint-markdown (glob patterns, unit test with fake tools)
+        run: bash tests/test-markdown-mk.sh
+
   test-actions-mk:
     needs: workflow-config
     permissions:
