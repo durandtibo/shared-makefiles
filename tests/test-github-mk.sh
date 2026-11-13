@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test that `rerun-failed` re-runs only failed/cancelled runs and honours the limit and branch, using a fake `gh`.
+# Test that `gh-rerun-failed` re-runs only failed/cancelled runs and honours the limit and branch, using a fake `gh`.
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -33,13 +33,13 @@ fail() {
 
 : >"$GH_LOG"
 : >"$GH_RERUN"
-make -f "$repo_root/github.mk" rerun-failed >/dev/null || fail "rerun-failed should succeed"
+make -f "$repo_root/github.mk" gh-rerun-failed >/dev/null || fail "gh-rerun-failed should succeed"
 grep -q -- "--limit 5" "$GH_LOG" || fail "default limit should be 5: $(cat "$GH_LOG")"
 if grep -q -- "--branch" "$GH_LOG"; then fail "no --branch expected by default"; fi
 [ "$(cat "$GH_RERUN")" = $'1 --failed\n3 --failed\n5 --failed' ] || fail "unexpected reruns: $(cat "$GH_RERUN")"
 
 : >"$GH_LOG"
-make -f "$repo_root/github.mk" rerun-failed GITHUB_RERUN_LIMIT=10 GITHUB_RERUN_BRANCH=my/branch >/dev/null || fail "with variables should succeed"
+make -f "$repo_root/github.mk" gh-rerun-failed GITHUB_RERUN_LIMIT=10 GITHUB_RERUN_BRANCH=my/branch >/dev/null || fail "with variables should succeed"
 grep -q -- "--limit 10" "$GH_LOG" || fail "limit override ignored: $(cat "$GH_LOG")"
 grep -q -- "--branch my/branch" "$GH_LOG" || fail "branch override ignored: $(cat "$GH_LOG")"
 

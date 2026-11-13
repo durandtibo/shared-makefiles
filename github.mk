@@ -6,7 +6,7 @@ GITHUB_MK_INCLUDED := 1
 # `gh` must be authenticated (`gh auth login`) and run inside a clone of the target repository.
 #
 # Optional variables (set before including this file, or on the command line):
-#   GITHUB_RERUN_LIMIT  ?= 5   # number of most recent runs considered by rerun-failed
+#   GITHUB_RERUN_LIMIT  ?= 5   # number of most recent runs considered by gh-rerun-failed
 #   GITHUB_RERUN_BRANCH ?=     # only consider runs of this branch (empty = all branches)
 
 GITHUB_RERUN_LIMIT ?= 5
@@ -30,8 +30,8 @@ install-gh:
 
 # Equivalent of "Re-run failed jobs" in the web UI, applied to the last runs whose conclusion is
 # failure, cancelled or timed_out. Successful, skipped and still-running runs are left untouched.
-.PHONY: rerun-failed
-rerun-failed: install-gh ## Re-run failed/cancelled runs among the last GITHUB_RERUN_LIMIT runs (optional GITHUB_RERUN_BRANCH)
+.PHONY: gh-rerun-failed
+gh-rerun-failed: install-gh ## Re-run failed/cancelled runs among the last GITHUB_RERUN_LIMIT runs (optional GITHUB_RERUN_BRANCH)
 	@echo "🔁 Re-running failed/cancelled runs among the last $(GITHUB_RERUN_LIMIT) runs$(if $(GITHUB_RERUN_BRANCH), of branch $(GITHUB_RERUN_BRANCH))..."
 	@ids="$$(gh run list --limit '$(GITHUB_RERUN_LIMIT)' $(if $(GITHUB_RERUN_BRANCH),--branch '$(GITHUB_RERUN_BRANCH)') \
 		--json databaseId,conclusion \
