@@ -92,6 +92,15 @@ jobs:
     permissions:
       contents: read
 
+  # Test github.mk on multiple OS
+  github:
+    needs: get-matrix
+    uses: ./.github/workflows/ci-github.yaml
+    with:
+      test-matrix: ${{ needs.get-matrix.outputs.test_matrix }}
+    permissions:
+      contents: read
+
   # Test self.mk on multiple OS
   self:
     needs: get-matrix

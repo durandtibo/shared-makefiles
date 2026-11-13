@@ -66,6 +66,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `toml.mk`     | `format-toml`                               | `taplo`                    | Format TOML files                                                     |
 | `markdown.mk` | `format-markdown`, `lint-markdown`          | `prettier`, `markdownlint` | Format and lint Markdown files                                        |
 | `actions.mk`  | `lint-actions`                              | `actionlint`               | Lint GitHub Actions workflow files                                    |
+| `github.mk`   | `gh-rerun-failed`                           | `gh`                       | Re-run failed/cancelled GitHub Actions runs                           |
 | `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv`                          |
 | `prettier.mk` | `install-prettier`                          | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk` |
 | `self.mk`     | `update-subtree`                            | `git`                      | Sync the `.make` shared-makefiles subtree                             |
@@ -157,6 +158,28 @@ Optional variables (set before `include`):
 include actions.mk
 
 ACTIONS_LINT_PATH = .
+```
+
+### `github.mk`
+
+Requires an authenticated GitHub CLI (`gh auth login`). `gh-rerun-failed` is the equivalent of "Re-run
+failed jobs" in the web UI, applied to the last runs that failed, were cancelled or timed out;
+successful and still-running runs are left alone.
+
+Optional variables (set before `include`, or on the command line):
+
+| Variable              | Default | Description                                              |
+| --------------------- | ------- | -------------------------------------------------------- |
+| `GITHUB_RERUN_LIMIT`  | `5`     | Number of most recent runs considered                    |
+| `GITHUB_RERUN_BRANCH` | empty   | Only consider runs of this branch (empty = all branches) |
+
+```makefile
+include github.mk
+```
+
+```bash
+make gh-rerun-failed                                   # last 5 runs, any branch
+make gh-rerun-failed GITHUB_RERUN_LIMIT=10 GITHUB_RERUN_BRANCH=main
 ```
 
 ### `uv.mk`
