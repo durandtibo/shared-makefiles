@@ -72,6 +72,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `toml.mk`     | `format-toml`                               | `taplo`                    | Format TOML files                                                     |
 | `markdown.mk` | `format-markdown`, `lint-markdown`          | `prettier`, `markdownlint` | Format and lint Markdown files                                        |
 | `actions.mk`  | `lint-actions`                              | `actionlint`               | Lint GitHub Actions workflow files                                    |
+| `git.mk`      | `git-delete-branches`                       | `git`                      | Delete all local branches except `main`                               |
 | `github.mk`   | `gh-rerun-failed`                           | `gh`                       | Re-run failed/cancelled GitHub Actions runs                           |
 | `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv`                          |
 | `prettier.mk` | `install-prettier`                          | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk` |
@@ -166,6 +167,17 @@ include actions.mk
 
 ACTIONS_LINT_PATH = .
 ```
+
+### `git.mk`
+
+`make git-delete-branches` runs `git branch -D` on every local branch except `GIT_MAIN_BRANCH`.
+Unmerged work is lost. The checked-out branch cannot be deleted by git, so it is skipped with a warning.
+
+Optional variables (set before `include`):
+
+| Variable          | Default | Description                          |
+| ----------------- | ------- | ------------------------------------ |
+| `GIT_MAIN_BRANCH` | `main`  | Branch kept by `git-delete-branches` |
 
 ### `github.mk`
 
