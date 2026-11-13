@@ -1,5 +1,11 @@
 # shared-makefiles
 
+[![CI](https://github.com/durandtibo/shared-makefiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/durandtibo/shared-makefiles/actions/workflows/ci.yaml)
+[![Nightly](https://github.com/durandtibo/shared-makefiles/actions/workflows/nightly.yaml/badge.svg)](https://github.com/durandtibo/shared-makefiles/actions/workflows/nightly.yaml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/durandtibo/shared-makefiles/badge)](https://scorecard.dev/viewer/?uri=github.com/durandtibo/shared-makefiles)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/tag/durandtibo/shared-makefiles?label=release)](https://github.com/durandtibo/shared-makefiles/tags)
+
 Shared/reusable Makefiles for formatting and linting common file types across projects.
 
 Each file is self-contained, include-guarded, and configurable via variables — pull in only what
