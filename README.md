@@ -76,6 +76,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `uv.mk`       | `install-invoke`, `update-uv`, `setup-venv` | `uv`                       | Manage Python virtual environments with `uv`                          |
 | `prettier.mk` | `install-prettier`                          | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk` |
 | `self.mk`     | `update-subtree`                            | `git`                      | Sync the `.make` shared-makefiles subtree                             |
+| `tools.mk`    | `check-tools`                               | —                          | Show which tools are installed and which are missing                  |
 | `help.mk`     | `help`                                      | —                          | List all documented (`## ...`) targets                                |
 
 ### `yaml.mk`
@@ -232,6 +233,17 @@ include self.mk
 $(SHARED_MAKEFILES_REMOTE_NAME) $(SHARED_MAKEFILES_BRANCH) --squash` to sync the subtree. It then
 removes the `.github/`, `testdata/` and `tests/` folders from within `$(SHARED_MAKEFILES_PREFIX)` (not
 needed in consuming projects) and commits the removal.
+
+### `tools.mk`
+
+`make check-tools` looks up each tool of `TOOLS` on the `PATH`, prints one line per tool (✅ with its
+path, or ❌ if missing) and exits with code 127 if any is missing.
+
+Optional variables (set before `include`):
+
+| Variable | Default                                                                                    | Description                    |
+| -------- | ------------------------------------------------------------------------------------------ | ------------------------------ |
+| `TOOLS`  | `actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint` | Space-separated tools to check |
 
 ### `help.mk`
 
