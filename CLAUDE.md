@@ -80,6 +80,7 @@ Files are prefixed by role:
   `ci-uv`) — run the targets of `<module>.mk` against `testdata/` on the OS matrix (`ci-uv` also
   uses the Python matrix).
 - `ci-self.yaml` — runs `tests/test-self-mk.sh` for `self.mk` on the OS matrix.
+- `ci-tools.yaml` — runs `tests/test-tools-mk.sh` for `tools.mk` on the OS matrix.
 - `ci-verify-workflows.yaml` — lints the workflow files. It has its own triggers and is not called
   from `ci.yaml`, so it can be a required check.
 - `lib-get-test-matrix.yaml` — reusable workflow that loads the OS/Python matrices once from
