@@ -110,6 +110,15 @@ jobs:
     permissions:
       contents: read
 
+  # Test tools.mk on multiple OS
+  tools:
+    needs: get-matrix
+    uses: ./.github/workflows/ci-tools.yaml
+    with:
+      test-matrix: ${{ needs.get-matrix.outputs.test_matrix }}
+    permissions:
+      contents: read
+
   # Test uv.mk on multiple OS and Python versions
   uv:
     needs: get-matrix
