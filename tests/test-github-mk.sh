@@ -18,6 +18,11 @@ if [ "$1 $2" = "run list" ]; then
 	done
 elif [ "$1 $2" = "run rerun" ]; then
 	echo "$3 $4" >>"$GH_RERUN"
+	# Simulate a run that cannot be retried
+	if [ "$3" = "${GH_UNRERUNNABLE:-}" ]; then
+		echo "run $3 cannot be rerun; This workflow run cannot be retried" >&2
+		exit 1
+	fi
 else
 	exit 1
 fi
@@ -42,5 +47,11 @@ if grep -q -- "--branch" "$GH_LOG"; then fail "no --branch expected by default";
 make -f "$repo_root/github.mk" gh-rerun-failed GITHUB_RERUN_LIMIT=10 GITHUB_RERUN_BRANCH=my/branch >/dev/null || fail "with variables should succeed"
 grep -q -- "--limit 10" "$GH_LOG" || fail "limit override ignored: $(cat "$GH_LOG")"
 grep -q -- "--branch my/branch" "$GH_LOG" || fail "branch override ignored: $(cat "$GH_LOG")"
+
+: >"$GH_RERUN"
+out="$(GH_UNRERUNNABLE=3 make -f "$repo_root/github.mk" gh-rerun-failed 2>&1)" || fail "a run that cannot be re-run must not fail the target"
+echo "$out" | grep -q "Warning: run 3 could not be re-run" || fail "missing warning: $out"
+echo "$out" | grep -q "Re-triggered 2 run(s), 1 skipped" || fail "unexpected summary: $out"
+[ "$(cat "$GH_RERUN")" = $'1 --failed\n3 --failed\n5 --failed' ] || fail "remaining runs should still be re-run: $(cat "$GH_RERUN")"
 
 echo "OK"

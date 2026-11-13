@@ -30,6 +30,7 @@ install-gh:
 
 # Equivalent of "Re-run failed jobs" in the web UI, applied to the last runs whose conclusion is
 # failure, cancelled or timed_out. Successful, skipped and still-running runs are left untouched.
+# A run that cannot be re-run (e.g. too old) only produces a warning; the target does not fail.
 .PHONY: gh-rerun-failed
 gh-rerun-failed: install-gh ## Re-run failed/cancelled runs among the last GITHUB_RERUN_LIMIT runs (optional GITHUB_RERUN_BRANCH)
 	@echo "🔁 Re-running failed/cancelled runs among the last $(GITHUB_RERUN_LIMIT) runs$(if $(GITHUB_RERUN_BRANCH), of branch $(GITHUB_RERUN_BRANCH))..."
@@ -40,11 +41,17 @@ gh-rerun-failed: install-gh ## Re-run failed/cancelled runs among the last GITHU
 	if [ -z "$$ids" ]; then \
 		echo "✅ No failed or cancelled runs to re-run"; \
 	else \
+		ok=0; skipped=0; \
 		for id in $$ids; do \
 			echo "🔁 Re-running failed jobs of run $$id"; \
-			gh run rerun "$$id" --failed || exit 1; \
+			if gh run rerun "$$id" --failed; then \
+				ok=$$((ok + 1)); \
+			else \
+				echo "⚠️ Warning: run $$id could not be re-run, skipping it"; \
+				skipped=$$((skipped + 1)); \
+			fi; \
 		done; \
-		echo "✅ Re-triggered $$(echo "$$ids" | wc -l | tr -d ' ') run(s)"; \
+		echo "✅ Re-triggered $$ok run(s), $$skipped skipped"; \
 	fi
 
 endif
