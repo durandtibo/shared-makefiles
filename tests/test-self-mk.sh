@@ -50,4 +50,38 @@ if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
 	echo "FAIL: working tree not clean after sync" >&2
 	exit 1
 fi
+
+# Dirty index: must fail with an actionable message and no success message.
+echo "# staged" >staged.txt
+git add staged.txt
+if out="$(make update-subtree 2>&1)"; then
+	echo "FAIL: update-subtree should fail with staged changes" >&2
+	exit 1
+fi
+case "$out" in
+*"index has staged changes"*) ;;
+*)
+	echo "FAIL: missing staged-changes message" >&2
+	exit 1
+	;;
+esac
+case "$out" in
+*"Subtree sync complete"*)
+	echo "FAIL: success message printed on failure" >&2
+	exit 1
+	;;
+esac
+git reset -q
+
+# Failed pull (unreachable remote): must fail without the success message.
+if out="$(make update-subtree SHARED_MAKEFILES_REMOTE_URL="$work/missing" SHARED_MAKEFILES_REMOTE_NAME=other 2>&1)"; then
+	echo "FAIL: update-subtree should fail when the fetch fails" >&2
+	exit 1
+fi
+case "$out" in
+*"Subtree sync complete"*)
+	echo "FAIL: success message printed on failure" >&2
+	exit 1
+	;;
+esac
 echo "PASS"
