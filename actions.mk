@@ -27,6 +27,26 @@ install-actionlint:
 		esac; \
 	fi
 
+.PHONY: install-zizmor
+install-zizmor:
+	@if ! command -v zizmor >/dev/null 2>&1; then \
+		echo "📦 zizmor not found, installing..."; \
+		case "$$(uname -s)" in \
+			Darwin) brew install zizmor ;; \
+			*) \
+			if command -v uv >/dev/null 2>&1; then \
+				uv tool install zizmor; \
+			elif command -v pipx >/dev/null 2>&1; then \
+				pipx install zizmor; \
+			elif command -v cargo >/dev/null 2>&1; then \
+				cargo install --locked zizmor; \
+			else \
+				echo "❌ Please install zizmor: https://docs.zizmor.sh/installation/"; exit 1; \
+			fi \
+				;; \
+		esac; \
+	fi
+
 .PHONY: lint-actions
 lint-actions: install-actionlint ## Lint GitHub Actions workflow files with actionlint
 	@echo "⚙️ Running actionlint on GitHub Actions workflow files..."

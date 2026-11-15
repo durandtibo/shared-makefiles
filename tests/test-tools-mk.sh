@@ -40,7 +40,7 @@ grep -q "Missing: missing-tool" <<<"$out" || fail "missing summary should name t
 
 # The default TOOLS covers the tools used by the repo.
 out="$(make -n check-tools)"
-for t in actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint; do
+for t in actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint zizmor; do
 	grep -qw "$t" <<<"$out" || fail "default TOOLS should include $t"
 done
 echo "PASS"
