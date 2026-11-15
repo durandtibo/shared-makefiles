@@ -59,7 +59,7 @@ git subtree add --prefix=.make shared-makefiles main --squash
 Then `include` the files you need from `.make/` in your project's `Makefile`, e.g.
 `include .make/yaml.mk`.
 
-To pull in upstream changes later, `include .make/self.mk` and run `make update-subtree` — see
+To pull in upstream changes later, `include .make/self.mk` and run `make self-update` — see
 [`self.mk`](#selfmk) below. It fetches the latest commits and runs `git subtree pull`, so you
 don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 
@@ -78,7 +78,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `uv.mk`        | `install-invoke`, `update-uv`, `setup-venv`          | `uv`                       | Manage Python virtual environments with `uv`                                                                        |
 | `prettier.mk`  | `install-prettier`                                   | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk`                                               |
 | `tool-info.mk` | —                                                    | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path                        |
-| `self.mk`      | `update-subtree`                                     | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
+| `self.mk`      | `self-update`, `update-subtree` (deprecated)         | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
 | `tools.mk`     | `check-tools`, `check-tool-releases`, `update-tools` | —                          | Show which tools are installed and which are missing, and when their versions were released; update installed tools |
 | `help.mk`      | `help`                                               | —                          | List all documented (`## ...`) targets                                                                              |
 
@@ -242,11 +242,14 @@ Optional variables (set before `include`):
 include self.mk
 ```
 
-`update-subtree` adds the `$(SHARED_MAKEFILES_REMOTE_NAME)` remote if missing, fetches
+`self-update` adds the `$(SHARED_MAKEFILES_REMOTE_NAME)` remote if missing, fetches
 `$(SHARED_MAKEFILES_BRANCH)`, and runs `git subtree pull --prefix=$(SHARED_MAKEFILES_PREFIX)
 $(SHARED_MAKEFILES_REMOTE_NAME) $(SHARED_MAKEFILES_BRANCH) --squash` to sync the subtree. It then
 removes the `.github/`, `testdata/` and `tests/` folders and files such as `CODEOWNERS` from within
 `$(SHARED_MAKEFILES_PREFIX)` (not needed in consuming projects) and commits the removal.
+
+`update-subtree` is a deprecated alias kept for backward compatibility: it prints a warning and runs
+`self-update`. Migrate to `self-update`; the alias may be removed in a future release.
 
 ### `tools.mk`
 

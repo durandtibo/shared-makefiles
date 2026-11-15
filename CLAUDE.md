@@ -12,7 +12,7 @@ files they need.
 - `*.mk` — one self-contained module per file type or concern: `yaml.mk`, `shell.mk`, `toml.mk`,
   `markdown.mk`, `makefile.mk`, `actions.mk`, `uv.mk`, `git.mk`, `github.mk`, `tools.mk`.
 - Helpers included by other modules: `prettier.mk`, `tool-info.mk` (`show-tool`, used by the
-  `install-*` targets), `help.mk` (`make help`), `self.mk` (`update-subtree`).
+  `install-*` targets), `help.mk` (`make help`), `self.mk` (`self-update`).
 - `Makefile` — the repo's own entry point; includes every module and defines `install-tools`,
   `format` and `lint`.
 - `testdata/` — sample files (`sample.yaml`, `sample.md`, `sample.sh`, `sample.toml`) used by CI to
