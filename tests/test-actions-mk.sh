@@ -11,9 +11,9 @@ fail() {
 	exit 1
 }
 
-# Minimal PATH: only make, uname and chmod are real, so a zizmor/brew/uv installed on the machine is hidden.
+# Minimal PATH: only make, uname, chmod, grep and head are real, so a zizmor/brew/uv installed on the machine is hidden.
 mkdir -p "$work/base" "$work/fake"
-for cmd in make uname chmod; do
+for cmd in make uname chmod grep head; do
 	ln -s "$(command -v "$cmd")" "$work/base/$cmd"
 done
 run_make() {

@@ -6,10 +6,11 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
-# Fake checkmake: records its arguments and fails if any is not an existing file.
+# Fake checkmake: answers --version (called by install-checkmake) without recording it, records its arguments and fails if any is not an existing file.
 mkdir -p "$work/bin"
 cat >"$work/bin/checkmake" <<'SH'
 #!/usr/bin/env bash
+if [ "${1:-}" = "--version" ]; then echo "checkmake 1.0.0"; exit 0; fi
 echo "$*" >"$CHECKMAKE_ARGS_FILE"
 for f in "$@"; do
 	[ -f "$f" ] || { echo "Error opening '$f'" >&2; exit 1; }
