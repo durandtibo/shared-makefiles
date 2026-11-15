@@ -10,7 +10,7 @@ TOOLS_MK_INCLUDED := 1
 # Optional variables (set before including this file, or on the command line):
 #   TOOLS ?= actionlint bats ...   # space-separated tools to check (default: tools used by this repo)
 
-TOOLS ?= actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint
+TOOLS ?= actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint zizmor
 
 .PHONY: check-tools
 check-tools: ## Show which tools are installed and which are missing

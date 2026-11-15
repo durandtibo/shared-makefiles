@@ -27,7 +27,7 @@ include help.mk
 .DEFAULT_GOAL := help
 
 .PHONY: install-tools
-install-tools: install-prettier install-yamllint install-mbake install-checkmake install-shellcheck install-shfmt install-bats install-taplo install-markdownlint install-actionlint ## Install all formatting/linting tools
+install-tools: install-prettier install-yamllint install-mbake install-checkmake install-shellcheck install-shfmt install-bats install-taplo install-markdownlint install-actionlint install-zizmor ## Install all formatting/linting tools
 
 .PHONY: format
 format: format-yaml format-makefile format-shell format-toml format-markdown ## Format all files
@@ -253,9 +253,9 @@ path, or ❌ if missing) and exits with code 127 if any is missing.
 
 Optional variables (set before `include`):
 
-| Variable | Default                                                                                    | Description                    |
-| -------- | ------------------------------------------------------------------------------------------ | ------------------------------ |
-| `TOOLS`  | `actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint` | Space-separated tools to check |
+| Variable | Default                                                                                           | Description                    |
+| -------- | ------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `TOOLS`  | `actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint zizmor` | Space-separated tools to check |
 
 ### `help.mk`
 
