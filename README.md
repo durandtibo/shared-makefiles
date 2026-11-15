@@ -63,22 +63,22 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 
 ## Available files
 
-| File           | Targets                                              | Tools                      | Description                                                                                                         |
-| -------------- | ---------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `yaml.mk`      | `format-yaml`, `lint-yaml`                           | `prettier`, `yamllint`     | Format and lint YAML files                                                                                          |
-| `makefile.mk`  | `format-makefile`, `lint-makefile`                   | `mbake`, `checkmake`       | Format and lint Makefiles and `.mk` files                                                                           |
-| `shell.mk`     | `format-shell`, `lint-shell`                         | `shfmt`, `shellcheck`      | Format and lint shell scripts                                                                                       |
-| `toml.mk`      | `format-toml`                                        | `taplo`                    | Format TOML files                                                                                                   |
-| `markdown.mk`  | `format-markdown`, `lint-markdown`                   | `prettier`, `markdownlint` | Format and lint Markdown files                                                                                      |
-| `actions.mk`   | `lint-actions`                                       | `actionlint`               | Lint GitHub Actions workflow files                                                                                  |
-| `git.mk`       | `git-delete-branches`                                | `git`                      | Delete all local branches except `main`                                                                             |
-| `github.mk`    | `gh-rerun-failed`                                    | `gh`                       | Re-run failed/cancelled GitHub Actions runs                                                                         |
-| `uv.mk`        | `install-invoke`, `update-uv`, `setup-venv`          | `uv`                       | Manage Python virtual environments with `uv`                                                                        |
-| `prettier.mk`  | `install-prettier`                                   | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk`                                               |
-| `tool-info.mk` | —                                                    | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path                        |
-| `self.mk`      | `self-update`, `update-subtree` (deprecated)         | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
+| File           | Targets                                                               | Tools                      | Description                                                                                                         |
+| -------------- | --------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `yaml.mk`      | `format-yaml`, `lint-yaml`                                            | `prettier`, `yamllint`     | Format and lint YAML files                                                                                          |
+| `makefile.mk`  | `format-makefile`, `lint-makefile`                                    | `mbake`, `checkmake`       | Format and lint Makefiles and `.mk` files                                                                           |
+| `shell.mk`     | `format-shell`, `lint-shell`                                          | `shfmt`, `shellcheck`      | Format and lint shell scripts                                                                                       |
+| `toml.mk`      | `format-toml`                                                         | `taplo`                    | Format TOML files                                                                                                   |
+| `markdown.mk`  | `format-markdown`, `lint-markdown`                                    | `prettier`, `markdownlint` | Format and lint Markdown files                                                                                      |
+| `actions.mk`   | `lint-actions`                                                        | `actionlint`               | Lint GitHub Actions workflow files                                                                                  |
+| `git.mk`       | `git-delete-branches`                                                 | `git`                      | Delete all local branches except `main`                                                                             |
+| `github.mk`    | `gh-rerun-failed`                                                     | `gh`                       | Re-run failed/cancelled GitHub Actions runs                                                                         |
+| `uv.mk`        | `install-invoke`, `update-uv`, `setup-venv`                           | `uv`                       | Manage Python virtual environments with `uv`                                                                        |
+| `prettier.mk`  | `install-prettier`                                                    | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk`                                               |
+| `tool-info.mk` | —                                                                     | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path                        |
+| `self.mk`      | `self-update`, `update-subtree` (deprecated)                          | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
 | `tools.mk`     | `install-tools`, `check-tools`, `check-tool-releases`, `update-tools` | —                          | Show which tools are installed and which are missing, and when their versions were released; update installed tools |
-| `help.mk`      | `help`                                               | —                          | List all documented (`## ...`) targets                                                                              |
+| `help.mk`      | `help`                                                                | —                          | List all documented (`## ...`) targets                                                                              |
 
 ### `yaml.mk`
 
