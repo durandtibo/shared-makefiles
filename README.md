@@ -22,12 +22,10 @@ include shell.mk
 include toml.mk
 include markdown.mk
 include actions.mk
+include tools.mk
 include help.mk
 
 .DEFAULT_GOAL := help
-
-.PHONY: install-tools
-install-tools: install-prettier install-yamllint install-mbake install-checkmake install-shellcheck install-shfmt install-bats install-taplo install-markdownlint install-actionlint install-zizmor ## Install all formatting/linting tools
 
 .PHONY: format
 format: format-yaml format-makefile format-shell format-toml format-markdown ## Format all files
@@ -39,8 +37,8 @@ lint: lint-yaml lint-makefile lint-shell lint-markdown lint-actions ## Lint all 
 Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`, `markdownlint`,
 `actionlint`) are installed on demand — each
 `format-*`/`lint-*` target depends on an `install-*` target that installs the tool if it isn't
-already on `PATH`, then prints the tool's name, version and path. Run `make install-tools` to
-install all of them upfront.
+already on `PATH`, then prints the tool's name, version and path. Run `make install-tools` (from `tools.mk`) to
+install every tool of `TOOLS` upfront; include the modules of those tools, or narrow `TOOLS`.
 
 Run `make help` to list every target that has a `## description` comment (see `help.mk` below).
 
@@ -79,7 +77,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `prettier.mk`  | `install-prettier`                                   | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk`                                               |
 | `tool-info.mk` | —                                                    | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path                        |
 | `self.mk`      | `self-update`, `update-subtree` (deprecated)         | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
-| `tools.mk`     | `check-tools`, `check-tool-releases`, `update-tools` | —                          | Show which tools are installed and which are missing, and when their versions were released; update installed tools |
+| `tools.mk`     | `install-tools`, `check-tools`, `check-tool-releases`, `update-tools` | —                          | Show which tools are installed and which are missing, and when their versions were released; update installed tools |
 | `help.mk`      | `help`                                               | —                          | List all documented (`## ...`) targets                                                                              |
 
 ### `yaml.mk`
