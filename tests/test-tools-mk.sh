@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test that `check-tools` reports found and missing tools, lists all of them, and exits with 127 when one is missing.
+# Test that `check-tools` and `check-tool-releases` report found and missing tools, lists all of them, and exits with 127 when one is missing.
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -38,6 +38,25 @@ grep -q "Error 127" <<<"$out" || fail "should exit with code 127"
 grep -Eq "❌ missing-tool +not found" <<<"$out" || fail "missing tool should be reported"
 grep -q "✅ fake-b" <<<"$out" || fail "tools after a missing one should still be listed"
 grep -q "Missing: missing-tool" <<<"$out" || fail "missing summary should name the tool"
+
+# check-tool-releases: a fake curl stands in for the network, so the test stays offline.
+cat >"$work/bin/curl" <<'SH'
+#!/bin/sh
+case "$*" in
+*releases/tags/v1.2.3*) echo '{"published_at": "2026-02-03T04:05:06Z"}' ;;
+*) exit 22 ;;
+esac
+SH
+chmod +x "$work/bin/curl"
+out="$(PATH="$work/bin:$PATH" make check-tool-releases TOOLS="fake-a fake-b" TOOL_SOURCES="fake-a=github:o/r fake-b=github:o/r" 2>&1)" || fail "check-tool-releases should succeed when all tools are available"
+grep -Eq "✅ fake-a +1\.2\.3 +2026-02-03 +$work/bin/fake-a" <<<"$out" || fail "fake-a should be reported with its release date"
+grep -Eq "✅ fake-b +\? +\? +$work/bin/fake-b" <<<"$out" || fail "a tool without version should have no date"
+out="$(PATH="$work/bin:$PATH" make check-tool-releases TOOLS="fake-a" TOOL_SOURCES="" 2>&1)" || fail "a tool without source should not fail"
+grep -Eq "✅ fake-a +1\.2\.3 +\? " <<<"$out" || fail "a tool without source should show ? as date"
+rc=0
+out="$(PATH="$work/bin:$PATH" make check-tool-releases TOOLS="fake-a missing-tool" 2>&1)" || rc=$?
+[ "$rc" -ne 0 ] || fail "check-tool-releases should fail when a tool is missing"
+grep -q "Error 127" <<<"$out" || fail "check-tool-releases should exit with 127 when a tool is missing"
 
 # The default TOOLS covers the tools used by the repo.
 out="$(make -n check-tools)"
