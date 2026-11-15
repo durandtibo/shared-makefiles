@@ -58,6 +58,44 @@ out="$(PATH="$work/bin:$PATH" make check-tool-releases TOOLS="fake-a missing-too
 [ "$rc" -ne 0 ] || fail "check-tool-releases should fail when a tool is missing"
 grep -q "Error 127" <<<"$out" || fail "check-tool-releases should exit with 127 when a tool is missing"
 
+# update-tools: fake package managers record their calls; only installed tools are upgraded.
+mkdir -p "$work/pm"
+# `brew list` knows fake-a only; `npm ls -g` knows fake-b only; the update commands succeed.
+cat >"$work/pm/brew" <<'SH'
+#!/bin/sh
+echo "brew $*" >>"$UPDATE_LOG"
+if [ "$1" = list ]; then [ "$3" = fake-a ]; fi
+SH
+cat >"$work/pm/npm" <<'SH'
+#!/bin/sh
+echo "npm $*" >>"$UPDATE_LOG"
+if [ "$1" = ls ]; then [ "$4" = fake-b ]; fi
+SH
+printf '#!/bin/sh\n' >"$work/bin/fake-c"
+chmod +x "$work/bin/fake-c" "$work/pm/brew" "$work/pm/npm"
+export UPDATE_LOG="$work/update.log"
+: >"$UPDATE_LOG"
+out="$(PATH="$work/pm:$work/bin:$PATH" make update-tools TOOLS="fake-a fake-b missing-tool fake-c" 2>&1)" || fail "update-tools should succeed"
+grep -q "brew upgrade fake-a" "$UPDATE_LOG" || fail "fake-a should be upgraded with brew"
+grep -q "npm install -g fake-b@latest" "$UPDATE_LOG" || fail "fake-b should be upgraded with npm"
+grep -q "missing-tool is not installed, skipped" <<<"$out" || fail "a missing tool should be skipped"
+if grep -q "missing-tool" "$UPDATE_LOG"; then fail "a missing tool must not be touched"; fi
+grep -q "fake-c was not installed by a supported package manager" <<<"$out" || fail "an unmanaged tool should be left alone"
+if grep -Eq "upgrade fake-c|fake-c@latest" "$UPDATE_LOG"; then fail "an unmanaged tool must not be upgraded"; fi
+
+# A failing upgrade is reported, the other tools are still updated, and make fails.
+cat >"$work/pm/brew" <<'SH'
+#!/bin/sh
+echo "brew $*" >>"$UPDATE_LOG"
+if [ "$1" = list ]; then exit 0; fi
+exit 1
+SH
+: >"$UPDATE_LOG"
+rc=0
+out="$(PATH="$work/pm:$work/bin:$PATH" make update-tools TOOLS="fake-a fake-b" 2>&1)" || rc=$?
+[ "$rc" -ne 0 ] || fail "update-tools should fail when an upgrade fails"
+grep -q "Failed: fake-a" <<<"$out" || fail "the failed tool should be named"
+
 # The default TOOLS covers the tools used by the repo.
 out="$(make -n check-tools)"
 for t in actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint zizmor; do
