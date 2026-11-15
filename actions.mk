@@ -1,6 +1,8 @@
 ifndef ACTIONS_MK_INCLUDED
 ACTIONS_MK_INCLUDED := 1
 
+include $(dir $(lastword $(MAKEFILE_LIST)))tool-info.mk
+
 # Targets for linting GitHub Actions workflow files.
 #
 # Optional variables (set before including this file):
@@ -26,6 +28,7 @@ install-actionlint:
 				;; \
 		esac; \
 	fi
+	$(call show-tool,actionlint)
 
 .PHONY: install-zizmor
 install-zizmor:
@@ -46,6 +49,7 @@ install-zizmor:
 				;; \
 		esac; \
 	fi
+	$(call show-tool,zizmor)
 
 .PHONY: lint-actions
 lint-actions: install-actionlint ## Lint GitHub Actions workflow files with actionlint
