@@ -64,6 +64,7 @@ mkdir -p "$work/pm"
 cat >"$work/pm/brew" <<'SH'
 #!/bin/sh
 echo "brew $*" >>"$UPDATE_LOG"
+if [ "$1" = outdated ]; then echo "$3 1.0 < 2.0"; fi
 if [ "$1" = list ]; then [ "$3" = fake-a ]; fi
 SH
 cat >"$work/pm/npm" <<'SH'
@@ -83,11 +84,24 @@ if grep -q "missing-tool" "$UPDATE_LOG"; then fail "a missing tool must not be t
 grep -q "fake-c was not installed by a supported package manager" <<<"$out" || fail "an unmanaged tool should be left alone"
 if grep -Eq "upgrade fake-c|fake-c@latest" "$UPDATE_LOG"; then fail "an unmanaged tool must not be upgraded"; fi
 
+# A tool that is already up to date is not upgraded and gives no warning.
+cat >"$work/pm/brew" <<'SH'
+#!/bin/sh
+echo "brew $*" >>"$UPDATE_LOG"
+if [ "$1" = list ]; then exit 0; fi
+SH
+: >"$UPDATE_LOG"
+out="$(PATH="$work/pm:$work/bin:$PATH" make update-tools TOOLS="fake-a" 2>&1)" || fail "an up-to-date tool should not fail"
+grep -q "fake-a is already up to date" <<<"$out" || fail "an up-to-date tool should be reported as such"
+if grep -q "brew upgrade" "$UPDATE_LOG"; then fail "an up-to-date tool must not be upgraded"; fi
+if grep -qi "warning" <<<"$out"; then fail "an up-to-date tool must not give a warning"; fi
+
 # A failing upgrade is reported, the other tools are still updated, and make fails.
 cat >"$work/pm/brew" <<'SH'
 #!/bin/sh
 echo "brew $*" >>"$UPDATE_LOG"
 if [ "$1" = list ]; then exit 0; fi
+if [ "$1" = outdated ]; then echo "$3 1.0 < 2.0"; exit 0; fi
 exit 1
 SH
 : >"$UPDATE_LOG"
