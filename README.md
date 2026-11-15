@@ -248,8 +248,8 @@ removes the `.github/`, `testdata/` and `tests/` folders and files such as `CODE
 
 ### `tools.mk`
 
-`make check-tools` looks up each tool of `TOOLS` on the `PATH`, prints one line per tool (✅ with its
-path, or ❌ if missing) and exits with code 127 if any is missing.
+`make check-tools` looks up each tool of `TOOLS` on the `PATH`, prints one aligned line per tool
+(✅ with its version and path, or ❌ if missing) and exits with code 127 if any is missing.
 
 Optional variables (set before `include`):
 

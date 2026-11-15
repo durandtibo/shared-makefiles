@@ -15,6 +15,7 @@ fail() {
 mkdir -p "$work/bin"
 for t in fake-a fake-b; do
 	printf '#!/bin/sh\n' >"$work/bin/$t"
+	if [ "$t" = fake-a ]; then printf 'echo "fake-a 1.2.3"\n' >>"$work/bin/$t"; fi
 	chmod +x "$work/bin/$t"
 done
 
@@ -25,8 +26,8 @@ cd "$work"
 
 # All tools available: success.
 out="$(PATH="$work/bin:$PATH" make check-tools TOOLS="fake-a fake-b" 2>&1)" || fail "should succeed when all tools are available"
-grep -q "✅ fake-a: $work/bin/fake-a" <<<"$out" || fail "fake-a should be reported with its path"
-grep -q "✅ fake-b: $work/bin/fake-b" <<<"$out" || fail "fake-b should be reported with its path"
+grep -Eq "✅ fake-a +1\.2\.3 +$work/bin/fake-a" <<<"$out" || fail "fake-a should be reported with its version and path"
+grep -Eq "✅ fake-b +\? +$work/bin/fake-b" <<<"$out" || fail "a tool without version output should be reported with ?"
 grep -q "All the 2 tools are available" <<<"$out" || fail "missing success summary"
 
 # One tool missing: all tools are still listed and make fails with 127.
@@ -34,7 +35,7 @@ rc=0
 out="$(PATH="$work/bin:$PATH" make check-tools TOOLS="fake-a missing-tool fake-b" 2>&1)" || rc=$?
 [ "$rc" -ne 0 ] || fail "should fail when a tool is missing"
 grep -q "Error 127" <<<"$out" || fail "should exit with code 127"
-grep -q "❌ missing-tool: not found" <<<"$out" || fail "missing tool should be reported"
+grep -Eq "❌ missing-tool +not found" <<<"$out" || fail "missing tool should be reported"
 grep -q "✅ fake-b" <<<"$out" || fail "tools after a missing one should still be listed"
 grep -q "Missing: missing-tool" <<<"$out" || fail "missing summary should name the tool"
 
