@@ -1,3 +1,9 @@
+include yaml.mk
+include makefile.mk
+include shell.mk
+include toml.mk
+include markdown.mk
+include actions.mk
 include all.mk
 include git.mk
 include github.mk
