@@ -79,7 +79,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `prettier.mk`  | `install-prettier`                          | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk`                        |
 | `tool-info.mk` | —                                           | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path |
 | `self.mk`      | `update-subtree`                            | `git`                      | Sync the `.make` shared-makefiles subtree                                                    |
-| `tools.mk`     | `check-tools`                               | —                          | Show which tools are installed and which are missing                                         |
+| `tools.mk`     | `check-tools`, `check-tool-releases`        | —                          | Show which tools are installed and which are missing, and when their versions were released  |
 | `help.mk`      | `help`                                      | —                          | List all documented (`## ...`) targets                                                       |
 
 ### `yaml.mk`
@@ -253,11 +253,17 @@ removes the `.github/`, `testdata/` and `tests/` folders and files such as `CODE
 `make check-tools` looks up each tool of `TOOLS` on the `PATH`, prints one aligned line per tool
 (✅ with its version and path, or ❌ if missing) and exits with code 127 if any is missing.
 
+`make check-tool-releases` does the same and adds the release date of each installed version. The
+date is looked up online (GitHub releases, npm or PyPI, per `TOOL_SOURCES`) with `curl`, so it is
+slower than `check-tools`, which stays instant and offline. A date that cannot be found is shown as
+`?` and does not fail the target; set `GITHUB_TOKEN` to avoid GitHub rate limits.
+
 Optional variables (set before `include`):
 
-| Variable | Default                                                                                           | Description                    |
-| -------- | ------------------------------------------------------------------------------------------------- | ------------------------------ |
-| `TOOLS`  | `actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint zizmor` | Space-separated tools to check |
+| Variable       | Default                                                                                           | Description                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `TOOLS`        | `actionlint bats checkmake gh markdownlint mbake prettier shellcheck shfmt taplo yamllint zizmor` | Space-separated tools to check                                                              |
+| `TOOL_SOURCES` | one entry per default tool                                                                        | `<tool>=<kind>:<id>` entries (`github:owner/repo`, `npm:pkg`, `pypi:pkg`) for release dates |
 
 ### `help.mk`
 
