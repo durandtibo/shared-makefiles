@@ -16,22 +16,10 @@ you need.
 Include the files you need in your project's `Makefile`:
 
 ```makefile
-include yaml.mk
-include makefile.mk
-include shell.mk
-include toml.mk
-include markdown.mk
-include actions.mk
-include tools.mk
+include all.mk # format and lint (includes yaml, makefile, shell, toml, markdown and actions)
 include help.mk
 
 .DEFAULT_GOAL := help
-
-.PHONY: format
-format: format-yaml format-makefile format-shell format-toml format-markdown ## Format all files
-
-.PHONY: lint
-lint: lint-yaml lint-makefile lint-shell lint-markdown lint-actions ## Lint all files
 ```
 
 Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`, `markdownlint`,
@@ -78,6 +66,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `tool-info.mk` | —                                                                     | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path                        |
 | `self.mk`      | `self-update`, `update-subtree` (deprecated)                          | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
 | `tools.mk`     | `install-tools`, `check-tools`, `check-tool-releases`, `update-tools` | —                          | Show which tools are installed and which are missing, and when their versions were released; update installed tools |
+| `all.mk`       | `format`, `lint`                                                      | —                          | Aggregate `format` and `lint` over the yaml, makefile, shell, toml, markdown and actions modules                    |
 | `help.mk`      | `help`                                                                | —                          | List all documented (`## ...`) targets                                                                              |
 
 ### `yaml.mk`
