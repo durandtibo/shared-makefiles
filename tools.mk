@@ -126,6 +126,10 @@ update-tools: ## Update the installed tools to their latest version (missing too
 			if [ "$${entry%%=*}" = "$$tool" ]; then npm_name="$${entry#*=}"; fi; \
 			done; \
 		if command -v brew >/dev/null 2>&1 && brew list --formula "$$brew_name" >/dev/null 2>&1; then \
+			if [ -z "$$(brew outdated --formula "$$brew_name" 2>/dev/null)" ]; then \
+				echo "✅ $$tool is already up to date"; \
+				continue; \
+			fi; \
 			echo "🍺 Updating $$tool with Homebrew..."; \
 			cmd="brew upgrade $$brew_name"; \
 		elif command -v npm >/dev/null 2>&1 && npm ls -g --depth=0 "$$npm_name" >/dev/null 2>&1; then \
