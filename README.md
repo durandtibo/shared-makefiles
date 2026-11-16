@@ -13,17 +13,18 @@ you need.
 
 ## Usage
 
-Include `all.mk` to get every target (`format`, `lint`, `install-tools`, `help`, ...), or include only the files you need:
+Include `all.mk` to get every target (`format`, `lint`, `install-tools`, `help`, ...), or include
+only the files you need:
 
 ```makefile
 include .make/all.mk
 ```
 
 Required tools (`prettier`, `yamllint`, `mbake`, `checkmake`, `shellcheck`, `shfmt`, `markdownlint`,
-`actionlint`) are installed on demand — each
-`format-*`/`lint-*` target depends on an `install-*` target that installs the tool if it isn't
-already on `PATH`, then prints the tool's name, version and path. Run `make install-tools` (from `tools.mk`) to
-install every tool of `TOOLS` upfront; include the modules of those tools, or narrow `TOOLS`.
+`actionlint`) are installed on demand — each `format-*`/`lint-*` target depends on an `install-*`
+target that installs the tool if it isn't already on `PATH`, then prints the tool's name, version
+and path. Run `make install-tools` (from `tools.mk`) to install every tool of `TOOLS` upfront;
+include the modules of those tools, or narrow `TOOLS`.
 
 Run `make help` to list every target that has a `## description` comment (see `help.mk` below).
 
