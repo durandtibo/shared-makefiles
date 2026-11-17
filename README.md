@@ -56,7 +56,7 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `shell.mk`     | `format-shell`, `lint-shell`                                          | `shfmt`, `shellcheck`      | Format and lint shell scripts                                                                                       |
 | `toml.mk`      | `format-toml`                                                         | `taplo`                    | Format TOML files                                                                                                   |
 | `markdown.mk`  | `format-markdown`, `lint-markdown`                                    | `prettier`, `markdownlint` | Format and lint Markdown files                                                                                      |
-| `actions.mk`   | `lint-actions`                                                        | `actionlint`               | Lint GitHub Actions workflow files                                                                                  |
+| `actions.mk`   | `lint-actions`, `lint-actions-security`                               | `actionlint`, `zizmor`     | Lint GitHub Actions workflow files; audit workflows and composite actions for security issues                       |
 | `git.mk`       | `git-delete-branches`                                                 | `git`                      | Delete all local branches except `main`                                                                             |
 | `github.mk`    | `gh-rerun-failed`                                                     | `gh`                       | Re-run failed/cancelled GitHub Actions runs                                                                         |
 | `uv.mk`        | `install-invoke`, `update-uv`, `setup-venv`                           | `uv`                       | Manage Python virtual environments with `uv`                                                                        |
@@ -162,9 +162,9 @@ MARKDOWN_LINT_GLOB = docs/**/*.md
 
 Optional variables (set before `include`):
 
-| Variable            | Default | Description                                                                      |
-| ------------------- | ------- | -------------------------------------------------------------------------------- |
-| `ACTIONS_LINT_PATH` | `.`     | Path searched for `.github/workflows/*.{yml,yaml}` files, passed to `actionlint` |
+| Variable            | Default | Description                                                                                                                                   |
+| ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ACTIONS_LINT_PATH` | `.`     | Path searched for `.github/workflows/*.{yml,yaml}` files (`actionlint`, `zizmor`) and `.github/actions/**/action.{yml,yaml}` files (`zizmor`) |
 
 ```makefile
 include actions.mk
