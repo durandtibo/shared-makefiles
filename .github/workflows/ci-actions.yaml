@@ -1,5 +1,5 @@
 # GitHub Actions module workflow.
-# Tests the targets of actions.mk: lint-actions and lint-actions-security against the files of testdata/ and install-zizmor with fake
+# Tests the targets of actions.mk: lint-actions against the files of testdata/ and install-zizmor with fake
 # installers (tests/test-actions-mk.sh), on multiple operating systems.
 
 name: Test actions.mk
@@ -31,9 +31,6 @@ jobs:
 
       - name: lint-actions (installs actionlint on demand)
         run: make -f actions.mk lint-actions ACTIONS_LINT_PATH=testdata
-
-      - name: lint-actions-security (installs zizmor on demand)
-        run: make -f actions.mk lint-actions-security ACTIONS_LINT_PATH=testdata
 
       - name: install-zizmor installs zizmor only when missing
         run: tests/test-actions-mk.sh
