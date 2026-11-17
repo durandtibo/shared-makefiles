@@ -12,7 +12,8 @@ files they need.
 - `*.mk` — one self-contained module per file type or concern: `yaml.mk`, `shell.mk`, `toml.mk`,
   `markdown.mk`, `makefile.mk`, `actions.mk`, `uv.mk`, `git.mk`, `github.mk`, `tools.mk`.
 - Helpers included by other modules: `prettier.mk`, `tool-info.mk` (`show-tool`, used by the
-  `install-*` targets), `help.mk` (`make help`), `self.mk` (`self-update`).
+  `install-*` targets), `files.mk` (`list-files`, `USE_GITIGNORE`: skip git-ignored files),
+  `help.mk` (`make help`), `self.mk` (`self-update`).
 - `Makefile` — the repo's own entry point; includes every module and defines `install-tools`,
   `format` and `lint`.
 - `testdata/` — sample files (`sample.yaml`, `sample.md`, `sample.sh`, `sample.toml`) used by CI to
@@ -83,8 +84,8 @@ Files are prefixed by role:
   - `ci-<module>.yaml` (`ci-yaml`, `ci-makefile`, `ci-shell`, `ci-toml`, `ci-markdown`,
     `ci-actions`, `ci-uv`, `ci-git`, `ci-github`): run the targets of `<module>.mk` against
     `testdata/` on the OS matrix (`ci-uv` also uses the Python matrix).
-  - `ci-self.yaml`, `ci-tools.yaml`: run `tests/test-self-mk.sh` and `tests/test-tools-mk.sh` on
-    the OS matrix.
+  - `ci-self.yaml`, `ci-tools.yaml`, `ci-files.yaml`: run `tests/test-self-mk.sh`,
+    `tests/test-tools-mk.sh` and `tests/test-files-mk.sh` on the OS matrix.
 - `ci-verify-workflows.yaml`: lints the workflow files themselves. It has its own triggers and is
   not called from `ci.yaml`, so it can be a required check.
 - `lib-get-test-matrix.yaml`: reusable workflow that loads the OS/Python matrices once from

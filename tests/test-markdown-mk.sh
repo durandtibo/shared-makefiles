@@ -12,7 +12,10 @@ for tool in markdownlint prettier; do
 	cat >"$work/bin/$tool" <<'SH'
 #!/usr/bin/env bash
 args=("$@")
-[ "${args[0]}" = "--write" ] && args=("${args[@]:1}")
+# Drop the flags added by the module (prettier ignore files, markdownlint ignore file).
+while [ "${#args[@]}" -gt 1 ] && [[ "${args[0]}" == --* ]]; do
+	case "${args[0]}" in --ignore-path) args=("${args[@]:2}") ;; *) args=("${args[@]:1}") ;; esac
+done
 [ "${#args[@]}" -eq 1 ] || { echo "expected exactly one glob argument, got: $*" >&2; exit 1; }
 python3 -c 'import glob,sys; print("\n".join(sorted(glob.glob(sys.argv[1], recursive=True))))' "${args[0]}" >"$TOOL_FILES"
 SH

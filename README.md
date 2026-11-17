@@ -61,11 +61,28 @@ don't need to remember the raw `git subtree`/`git remote` invocations yourself.
 | `github.mk`    | `gh-rerun-failed`                                                     | `gh`                       | Re-run failed/cancelled GitHub Actions runs                                                                         |
 | `uv.mk`        | `install-invoke`, `update-uv`, `setup-venv`                           | `uv`                       | Manage Python virtual environments with `uv`                                                                        |
 | `prettier.mk`  | `install-prettier`                                                    | `prettier`                 | Shared `install-prettier` target, included by `yaml.mk`/`markdown.mk`                                               |
+| `files.mk`     | —                                                                     | —                          | Shared helpers that make the format/lint targets skip the files ignored by `.gitignore` (`USE_GITIGNORE`)           |
 | `tool-info.mk` | —                                                                     | —                          | Shared `show-tool` helper used by the `install-*` targets to print a tool's version and path                        |
 | `self.mk`      | `self-update`, `update-subtree` (deprecated)                          | `git`                      | Sync the `.make` shared-makefiles subtree                                                                           |
 | `tools.mk`     | `install-tools`, `check-tools`, `check-tool-releases`, `update-tools` | —                          | Show which tools are installed and which are missing, and when their versions were released; update installed tools |
 | `all.mk`       | `format`, `lint`                                                      | —                          | Include every module, make `help` the default goal, and define `format` and `lint`                                  |
 | `help.mk`      | `help`                                                                | —                          | List all documented (`## ...`) targets                                                                              |
+
+### Ignored files
+
+By default every format/lint target skips the files ignored by `.gitignore`, in addition to the
+tools' own ignore files (`.prettierignore`, `.markdownlintignore`, the `ignore` key of
+`.yamllint.yaml`, ...). `files.mk` lists the files with `git ls-files` (tracked files and untracked
+files that are not ignored) and falls back to `find` outside a git work tree. `prettier` gets
+`--ignore-path .gitignore --ignore-path .prettierignore`, and `markdownlint` gets an ignore file
+combining the root `.gitignore` and `.markdownlintignore`.
+
+| Variable        | Default | Description                                                                |
+| --------------- | ------- | -------------------------------------------------------------------------- |
+| `USE_GITIGNORE` | `1`     | `1` skips the files ignored by `.gitignore`; any other value does not skip |
+
+Set it before `include`, or on the command line (`make lint USE_GITIGNORE=0`). It applies to
+`yaml.mk`, `makefile.mk`, `shell.mk`, `toml.mk`, `markdown.mk` and `actions.mk`.
 
 ### `yaml.mk`
 
