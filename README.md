@@ -103,10 +103,14 @@ YAML_LINT_PATH = .github/workflows
 
 Optional variables (set before `include`):
 
-| Variable                | Default         | Description                    |
-| ----------------------- | --------------- | ------------------------------ |
-| `MAKEFILE_FORMAT_FILES` | `Makefile *.mk` | Files passed to `mbake format` |
-| `MAKEFILE_LINT_FILES`   | `Makefile *.mk` | Files passed to `checkmake`    |
+| Variable                | Default | Description                                                                  |
+| ----------------------- | ------- | ---------------------------------------------------------------------------- |
+| `MAKEFILE_PATH`         | `.`     | Directory searched recursively for `Makefile`, `GNUmakefile` and `*.mk`      |
+| `MAKEFILE_FORMAT_FILES` | (empty) | If set, shell globs passed to `mbake format` instead of the recursive search |
+| `MAKEFILE_LINT_FILES`   | (empty) | If set, shell globs passed to `checkmake` instead of the recursive search    |
+
+Files in nested directories are included; git-ignored files and vendored `.make` directories are
+skipped (see `USE_GITIGNORE`).
 
 ```makefile
 include makefile.mk

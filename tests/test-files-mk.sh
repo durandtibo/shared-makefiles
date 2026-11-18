@@ -68,7 +68,7 @@ check makefile format-makefile mbake "--config $repo_root/bake.toml Makefile for
 # 2. USE_GITIGNORE=0: the ignored files are processed again (but still not the vendored .make).
 check shell lint-shell shellcheck "./ignored/i.sh ./ok.sh ./sub/s.sh ./x.gen.sh " USE_GITIGNORE=0
 check toml format-toml taplo "./ignored/i.toml ./ok.toml format " USE_GITIGNORE=0
-check makefile lint-makefile checkmake "Makefile ignored.mk ok.mk " USE_GITIGNORE=0
+check makefile lint-makefile checkmake "./Makefile ./ignored.mk ./ok.mk " USE_GITIGNORE=0
 check actions lint-actions actionlint "-color ./.github/workflows/w.yaml ./.github/workflows/w.yml ./ignored/.github/workflows/i.yaml " USE_GITIGNORE=0
 
 # 3. Prettier and markdownlint get the ignore files only when USE_GITIGNORE=1.

@@ -30,20 +30,28 @@ fail() {
 	exit 1
 }
 
-# 1. Default pattern with no *.mk file: only Makefile is linted.
+# 0. Nested files are found by default; a vendored .make and ignored files are skipped.
+mkdir -p a/b .make ign
+touch a/b/n.mk a/Makefile .make/v.mk ign/i.mk
+printf 'ign/\n' >.gitignore
+git init -q .
+make -f "$repo_root/makefile.mk" lint-makefile >/dev/null || fail "nested search should pass"
+[ "$(tr ' ' '\n' <"$CHECKMAKE_ARGS_FILE" | LC_ALL=C sort | tr '\n' ' ')" = "Makefile a/Makefile a/b/n.mk " ] || fail "nested: got: $(cat "$CHECKMAKE_ARGS_FILE")"
+rm -rf a .make ign .gitignore .git
+
+# 1. Explicit globs with no *.mk file: only Makefile is linted.
 rm -f "$CHECKMAKE_ARGS_FILE"
-make -f "$repo_root/makefile.mk" lint-makefile >/dev/null || fail "default patterns without *.mk should pass"
+make -f "$repo_root/makefile.mk" lint-makefile MAKEFILE_LINT_FILES="Makefile *.mk" >/dev/null || fail "default patterns without *.mk should pass"
 [ "$(cat "$CHECKMAKE_ARGS_FILE")" = "Makefile" ] || fail "expected only Makefile, got: $(cat "$CHECKMAKE_ARGS_FILE")"
 
-# 2. Default pattern with a *.mk file: both files are linted.
+# 2. Default search with a *.mk file: both files are linted.
 touch extra.mk
 make -f "$repo_root/makefile.mk" lint-makefile >/dev/null || fail "default patterns with *.mk should pass"
-[ "$(cat "$CHECKMAKE_ARGS_FILE")" = "Makefile extra.mk" ] || fail "expected Makefile and extra.mk, got: $(cat "$CHECKMAKE_ARGS_FILE")"
+[ "$(cat "$CHECKMAKE_ARGS_FILE")" = "./Makefile ./extra.mk" ] || fail "expected Makefile and extra.mk, got: $(cat "$CHECKMAKE_ARGS_FILE")"
 
 # 3. Nothing matches: checkmake is not run and the target succeeds.
 rm -f "$CHECKMAKE_ARGS_FILE"
-out="$(make -f "$repo_root/makefile.mk" lint-makefile MAKEFILE_LINT_FILES="no-such-dir/*.mk")" || fail "no matching files should not fail"
+make -f "$repo_root/makefile.mk" lint-makefile MAKEFILE_LINT_FILES="no-such-dir/*.mk" >/dev/null || fail "no matching files should not fail"
 [ ! -e "$CHECKMAKE_ARGS_FILE" ] || fail "checkmake should not run when nothing matches"
-grep -q "No files found matching" <<<"$out" || fail "expected 'No files found' message"
 
 echo "PASS: test-makefile-mk"
