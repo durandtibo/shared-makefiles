@@ -54,11 +54,11 @@ jobs:
 
       - name: Check the invoke-tasklib version
         run: |
-          uv pip show invoke-tasklib | grep -E '^Version: (0\.0\.([8-9]|[1-9][0-9])|0\.[1-9]|[1-9])'
+          uv pip show invoke-tasklib | grep -E '^Version: (0\.[1-9]|[1-9])'
 
       - name: Check that the env tasks are available
         run: |
-          echo "from invoke_tasklib import ns" > tasks.py
+          printf '%s\n' "from invoke_tasklib import make_ns" "ns = make_ns()" > tasks.py
           inv --list | grep -E 'env\.create-venv'
           inv --list | grep -E 'env\.install'
 
